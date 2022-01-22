@@ -29,5 +29,5 @@
 
 
     <!-- 导入mongodb的配置文件 -->
-    <import resource="mongoDB.xml" />
+    <import resource="classpath:mongoDB.xml" />
 </beans>

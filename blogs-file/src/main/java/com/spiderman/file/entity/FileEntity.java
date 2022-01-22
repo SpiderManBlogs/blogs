@@ -26,8 +26,6 @@ public class FileEntity implements Serializable {
     @Field("create_time")
     @JsonFormat(pattern="yyyy-MM-dd",timezone="GMT+8")
     private Date createTime;
-
-    private CommonsMultipartFile file;
     @Field("blogs_id")
     private String blogsId;
     @Field("field_id")
@@ -74,14 +72,6 @@ public class FileEntity implements Serializable {
         this.createTime = createTime;
     }
 
-    public CommonsMultipartFile getFile() {
-        return file;
-    }
-
-    public void setFile(CommonsMultipartFile file) {
-        this.file = file;
-    }
-
     public String getBlogsId() {
         return blogsId;
     }
@@ -113,7 +103,6 @@ public class FileEntity implements Serializable {
                 ", fileName='" + fileName + '\'' +
                 ", fileCode='" + fileCode + '\'' +
                 ", createTime=" + createTime +
-                ", file=" + file +
                 ", blogsId='" + blogsId + '\'' +
                 ", fieldId='" + fieldId + '\'' +
                 '}';

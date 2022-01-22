@@ -13,14 +13,20 @@
     <!-- 加载mongodb的属性配置文件 -->
     <context:property-placeholder location="classpath:mongodb.properties" />
 
-    <!--3.服务器连接信息-->
+    <!--服务器连接信息-->
     <mongo:mongo-client id="mongo" host="${mongo.host}" port="${mongo.port}" credentials="${mongo.user}:${mongo.pwd}@${mongo.dbname}"/>
+    <mongo:mapping-converter id="converter" />
+    <mongo:db-factory id="mongoDbFactory" dbname="${mongo.dbname}" mongo-ref="mongo"/>
 
-    <!--4.创建mongoTemplate模板-->
+    <!--创建mongoTemplate模板-->
     <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
-        <constructor-arg ref="mongo"/>
-        <!-- 设置使用的数据库 名-->
-        <constructor-arg name="databaseName" value="${mongo.dbname}"/>
+        <constructor-arg ref="mongoDbFactory"/>
+    </bean>
+
+    <!--创建gridFsTemplate模板-->
+    <bean id="gridFsTemplate" class="org.springframework.data.mongodb.gridfs.GridFsTemplate">
+        <constructor-arg ref="mongoDbFactory"/>
+        <constructor-arg ref="converter"/>
     </bean>
 
 </beans>

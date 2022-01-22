@@ -33,4 +33,13 @@ public class FileVO {
     public void setFieldId(String fieldId) {
         this.fieldId = fieldId;
     }
+
+    @Override
+    public String toString() {
+        return "FileVO{" +
+                "file=" + file +
+                ", blogsId='" + blogsId + '\'' +
+                ", fieldId='" + fieldId + '\'' +
+                '}';
+    }
 }
