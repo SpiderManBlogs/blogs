@@ -4,6 +4,7 @@ import com.spiderman.blogs.entity.BlogsListEntity;
 import com.spiderman.blogs.entity.BlogsSayingEntity;
 import com.spiderman.blogs.service.BlogsSaveService;
 import com.spiderman.blogs.vo.BlogsSayingVO;
+import com.spiderman.utils.GlobalStatic;
 import com.spiderman.utils.QueryUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,19 +32,24 @@ public class BLogsSaveServiceImpl implements BlogsSaveService {
 
     @Override
     public BlogsSayingVO saveSaying(BlogsSayingVO vo) {
-        BlogsSayingEntity entity = new BlogsSayingEntity();
+        BlogsSayingEntity entity = new BlogsSayingEntity(GlobalStatic.TYPE_SAYING);
         BeanUtils.copyProperties(vo,entity);
         entity.setCreate(create);
         BlogsSayingEntity backEntity = mongoTemplate.save(entity);
+        //保存列表
+        saveList(backEntity.getId());
+        BlogsSayingVO backVO = new BlogsSayingVO();
+        BeanUtils.copyProperties(backEntity,backVO);
+        return backVO;
+    }
+
+    private void saveList(String blogsid){
         BlogsListEntity listEntity = new BlogsListEntity();
         Map<String,Object> where = new HashMap<>();
         where.put("dr",0);
         long count = mongoTemplate.count(QueryUtil.create(where), BlogsListEntity.class);
-        listEntity.setBlogid(backEntity.getId());
+        listEntity.setBlogid(blogsid);
         listEntity.setOrder(count+1);
         mongoTemplate.save(listEntity);
-        BlogsSayingVO backVO = new BlogsSayingVO();
-        BeanUtils.copyProperties(backEntity,backVO);
-        return backVO;
     }
 }

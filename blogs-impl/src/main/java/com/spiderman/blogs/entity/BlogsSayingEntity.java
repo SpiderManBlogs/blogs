@@ -13,9 +13,10 @@ import java.util.Date;
 @Document(collection = "blogs_saying")
 public class BlogsSayingEntity implements Serializable {
 
-    public BlogsSayingEntity() {
+    public BlogsSayingEntity(String type) {
         this.dr = 0;
         this.createTime = new Date();
+        this.type = type;
     }
 
     //名言
