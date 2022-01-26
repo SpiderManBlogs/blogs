@@ -11,7 +11,8 @@ import java.io.Serializable;
 @Document(collection = "blogs_list")
 public class BlogsListEntity implements Serializable {
 
-    public BlogsListEntity() {
+    public BlogsListEntity(String type) {
+        this.type = type;
         this.dr = 0;
     }
 
@@ -20,10 +21,19 @@ public class BlogsListEntity implements Serializable {
 
     private String blogid;
 
+    private String type;
+
     private long order;
 
     private int dr;
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getId() {
         return id;

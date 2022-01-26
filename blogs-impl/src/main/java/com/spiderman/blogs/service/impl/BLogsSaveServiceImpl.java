@@ -39,7 +39,7 @@ public class BLogsSaveServiceImpl implements BlogsSaveService {
         entity.setCreate(create);
         BlogsSayingEntity backEntity = mongoTemplate.save(entity);
         //保存列表
-        saveList(backEntity.getId());
+        saveList(backEntity.getId(),GlobalStatic.TYPE_SAYING);
         BlogsSayingVO backVO = new BlogsSayingVO();
         BeanUtils.copyProperties(backEntity,backVO);
         return backVO;
@@ -52,14 +52,14 @@ public class BLogsSaveServiceImpl implements BlogsSaveService {
         entity.setCreate(create);
         BlogsLinkEntity backEntity = mongoTemplate.save(entity);
         //保存列表
-        saveList(backEntity.getId());
+        saveList(backEntity.getId(),GlobalStatic.TYPE_LINK);
         BlogsLinkVO backVO = new BlogsLinkVO();
         BeanUtils.copyProperties(backEntity,backVO);
         return backVO;
     }
 
-    private void saveList(String blogsid){
-        BlogsListEntity listEntity = new BlogsListEntity();
+    private void saveList(String blogsid,String type){
+        BlogsListEntity listEntity = new BlogsListEntity(type);
         Map<String,Object> where = new HashMap<>();
         where.put("dr",0);
         long count = mongoTemplate.count(QueryUtil.create(where), BlogsListEntity.class);
