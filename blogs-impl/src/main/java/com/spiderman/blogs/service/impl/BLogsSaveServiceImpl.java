@@ -1,8 +1,10 @@
 package com.spiderman.blogs.service.impl;
 
+import com.spiderman.blogs.entity.BlogsLinkEntity;
 import com.spiderman.blogs.entity.BlogsListEntity;
 import com.spiderman.blogs.entity.BlogsSayingEntity;
 import com.spiderman.blogs.service.BlogsSaveService;
+import com.spiderman.blogs.vo.BlogsLinkVO;
 import com.spiderman.blogs.vo.BlogsSayingVO;
 import com.spiderman.utils.GlobalStatic;
 import com.spiderman.utils.QueryUtil;
@@ -39,6 +41,19 @@ public class BLogsSaveServiceImpl implements BlogsSaveService {
         //保存列表
         saveList(backEntity.getId());
         BlogsSayingVO backVO = new BlogsSayingVO();
+        BeanUtils.copyProperties(backEntity,backVO);
+        return backVO;
+    }
+
+    @Override
+    public BlogsLinkVO saveLink(BlogsLinkVO vo) {
+        BlogsLinkEntity entity = new BlogsLinkEntity(GlobalStatic.TYPE_LINK);
+        BeanUtils.copyProperties(vo,entity);
+        entity.setCreate(create);
+        BlogsLinkEntity backEntity = mongoTemplate.save(entity);
+        //保存列表
+        saveList(backEntity.getId());
+        BlogsLinkVO backVO = new BlogsLinkVO();
         BeanUtils.copyProperties(backEntity,backVO);
         return backVO;
     }

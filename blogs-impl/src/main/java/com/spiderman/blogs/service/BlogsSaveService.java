@@ -1,5 +1,6 @@
 package com.spiderman.blogs.service;
 
+import com.spiderman.blogs.vo.BlogsLinkVO;
 import com.spiderman.blogs.vo.BlogsSayingVO;
 
 public interface BlogsSaveService {
@@ -10,4 +11,11 @@ public interface BlogsSaveService {
      * @return 保存后数据
      */
     BlogsSayingVO saveSaying(BlogsSayingVO saying);
+
+    /**
+     * 链接保存
+     * @param link 链接VO
+     * @return 保存后数据
+     */
+    BlogsLinkVO saveLink(BlogsLinkVO link);
 }
