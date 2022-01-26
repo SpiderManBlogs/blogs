@@ -1,5 +1,8 @@
 package com.spiderman.utils;
 
+import com.spiderman.blogs.entity.BlogsLinkEntity;
+import com.spiderman.blogs.entity.BlogsSayingEntity;
+
 public class GlobalStatic {
 
     /**
@@ -17,5 +20,22 @@ public class GlobalStatic {
     public static final String TYPE_VIDEO = "video";
     //链接跳转类型
     public static final String TYPE_LINK = "link";
+
+    /**
+     * 获取类型对应Class
+     * @param type 类型
+     * @return Class
+     * @throws Exception 类型不正确
+     */
+    public static Class getClass(String type) throws Exception {
+        switch (type){
+            case GlobalStatic.TYPE_SAYING:
+                return BlogsSayingEntity.class;
+            case GlobalStatic.TYPE_LINK:
+                return BlogsLinkEntity.class;
+            default:
+                throw new Exception("类型不正确");
+        }
+    }
 
 }

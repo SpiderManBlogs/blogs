@@ -62,7 +62,7 @@ public class BlogsController {
         }catch (Exception e){
             back.put("status",0);
             back.put("msg","保存失败：" + e.getMessage());
-            log.error("saveSaying保存失败：" + e.getMessage());
+            log.error("saveLink保存失败：" + e.getMessage());
         }
         return back;
     }
@@ -83,8 +83,29 @@ public class BlogsController {
             back.put("status",1);
         }catch (Exception e){
             back.put("status",0);
+            back.put("msg","查询失败：" + e.getMessage());
+            log.error("queryList查询失败：" + e.getMessage());
+        }
+        return back;
+    }
+
+    @RequestMapping("/queryCard")
+    @ResponseBody
+    public JSONObject queryCard(@RequestBody JSONObject json) {
+        JSONObject back = new JSONObject();
+        try {
+            String id = json.getString("id");
+            String type = json.getString("type");
+            if (StringUtils.isEmpty(type) || StringUtils.isEmpty(id)){
+                throw new Exception("查询参数不能为空!");
+            }
+            Object backvo = blogsQueryService.queryById(id,type);
+            back.put("data",backvo);
+            back.put("status",1);
+        }catch (Exception e){
+            back.put("status",0);
             back.put("msg","保存失败：" + e.getMessage());
-            log.error("saveSaying保存失败：" + e.getMessage());
+            log.error("queryCard查询失败：" + e.getMessage());
         }
         return back;
     }

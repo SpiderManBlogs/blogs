@@ -19,4 +19,12 @@ public interface BlogsQueryService {
      * @return 总数
      */
     long queryCount();
+
+    /**
+     * id+类型 查询实体详情
+     * @param id id
+     * @param type 类型
+     * @return detail详情
+     */
+    Object queryById(String id, String type) throws Exception;
 }

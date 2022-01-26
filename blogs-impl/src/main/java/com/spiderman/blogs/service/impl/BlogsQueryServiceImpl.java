@@ -1,9 +1,13 @@
 package com.spiderman.blogs.service.impl;
 
+import com.spiderman.blogs.entity.BlogsLinkEntity;
 import com.spiderman.blogs.entity.BlogsListEntity;
+import com.spiderman.blogs.entity.BlogsSayingEntity;
 import com.spiderman.blogs.service.BlogsQueryService;
 import com.spiderman.blogs.vo.BlogsListVO;
+import com.spiderman.utils.GlobalStatic;
 import com.spiderman.utils.QueryUtil;
+import org.bson.types.ObjectId;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -43,5 +47,10 @@ public class BlogsQueryServiceImpl implements BlogsQueryService {
         Map<String, Object> where = new HashMap<>();
         where.put("dr",0);
         return mongoTemplate.count(QueryUtil.create(where), BlogsListEntity.class);
+    }
+
+    @Override
+    public Object queryById(String id, String type) throws Exception {
+        return mongoTemplate.findById(new ObjectId(id),GlobalStatic.getClass(type));
     }
 }
