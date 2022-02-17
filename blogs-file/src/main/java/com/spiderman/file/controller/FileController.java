@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -40,11 +41,11 @@ public class FileController {
 
     @RequestMapping("/query")
     @ResponseBody
-    public JSONObject queryImage(String fileCode) {
+    public JSONObject queryImage(@RequestParam(value="fileCode") String fileCode) {
         JSONObject back = new JSONObject();
         try {
             String imageBase64 = fileSaveService.queryImage(fileCode);
-            back.put("data",imageBase64);
+            back.put("data","data:image/jpg;base64," + imageBase64);
             back.put("status",1);
         }catch (Exception e){
             back.put("status",0);

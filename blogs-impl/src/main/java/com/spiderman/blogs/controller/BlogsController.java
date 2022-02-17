@@ -72,8 +72,8 @@ public class BlogsController {
     public JSONObject queryList(@RequestBody JSONObject page) {
         JSONObject back = new JSONObject();
         try {
-            int pageSize = page.containsKey("pageSize") ? page.getInteger("pageSize") : 0;
-            int pageThis = page.containsKey("pageThis") ? page.getInteger("pageThis") : 20;
+            int pageSize = page.containsKey("pageSize") ? page.getInteger("pageSize") : 20;
+            int pageThis = page.containsKey("pageThis") ? page.getInteger("pageThis") : 0;
             List<BlogsListVO> backvo = blogsQueryService.queryPage(pageSize, pageThis);
             long count = blogsQueryService.queryCount();
             back.put("data",backvo);

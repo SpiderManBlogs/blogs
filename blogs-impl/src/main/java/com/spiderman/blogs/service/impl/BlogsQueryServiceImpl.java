@@ -32,7 +32,7 @@ public class BlogsQueryServiceImpl implements BlogsQueryService {
         where.put("dr",0);
         List<Sort.Order> orders = new ArrayList<>();
         orders.add(Sort.Order.desc("order"));
-        List<BlogsListEntity> backEntitys = mongoTemplate.find(QueryUtil.create(where,pageSize * pageThis,pageSize, orders), BlogsListEntity.class);
+        List<BlogsListEntity> backEntitys = mongoTemplate.find(QueryUtil.create(where,pageSize,pageSize * pageThis, orders), BlogsListEntity.class);
         List<BlogsListVO> backVOS = new ArrayList<>();
         for (BlogsListEntity backentity:backEntitys) {
             BlogsListVO vo = new BlogsListVO();
