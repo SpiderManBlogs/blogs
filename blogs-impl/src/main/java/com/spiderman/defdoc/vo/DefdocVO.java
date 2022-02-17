@@ -9,6 +9,17 @@ public class DefdocVO {
     private String defdocname;
     private String defdoccode;
 
+    //是否启动 0 否 1 是
+    private int enablement;
+
+    public int getEnablement() {
+        return enablement;
+    }
+
+    public void setEnablement(int enablement) {
+        this.enablement = enablement;
+    }
+
     public String getDefdoclistid() {
         return defdoclistid;
     }

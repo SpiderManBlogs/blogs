@@ -5,6 +5,17 @@ public class DefdocListVO {
     private String defdoclistname;
     private String defdoclistcode;
 
+    //是否启动 0 否 1 是
+    private int enablement;
+
+    public int getEnablement() {
+        return enablement;
+    }
+
+    public void setEnablement(int enablement) {
+        this.enablement = enablement;
+    }
+
     public String getDefdoclistid() {
         return defdoclistid;
     }

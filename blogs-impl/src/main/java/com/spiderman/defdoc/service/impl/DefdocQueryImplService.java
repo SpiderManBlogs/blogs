@@ -26,7 +26,7 @@ public class DefdocQueryImplService implements DefdocQueryService {
     public List<DefdocListVO> query() {
         Map<String, Object> where = new HashMap<>();
         where.put("dr",0);
-        where.put("enablement",1);
+//        where.put("enablement",1);
         List<DefdocListEntity> backentity = mongoTemplate.find(QueryUtil.create(where), DefdocListEntity.class);
         List<DefdocListVO> backvos = new ArrayList<>();
         for (DefdocListEntity entity:backentity) {
@@ -41,7 +41,7 @@ public class DefdocQueryImplService implements DefdocQueryService {
     public List<DefdocVO> query(String id) {
         Map<String, Object> where = new HashMap<>();
         where.put("dr",0);
-        where.put("enablement",1);
+//        where.put("enablement",1);
         where.put("defdoclistid",id);
         List<DefdocEntity> backentity = mongoTemplate.find(QueryUtil.create(where), DefdocEntity.class);
         List<DefdocVO> backvos = new ArrayList<>();

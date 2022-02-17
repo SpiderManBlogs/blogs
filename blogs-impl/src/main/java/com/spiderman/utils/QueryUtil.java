@@ -9,6 +9,12 @@ import java.util.Map;
 
 public class QueryUtil {
 
+    public static Query create(String id){
+        Query query = new Query();
+        query.addCriteria(Criteria.where("_id").is(id));
+        return query;
+    }
+
     /**
      * 分页查询
      * 基础条件 + 排序查询
