@@ -1,5 +1,6 @@
 package com.spiderman.blogs.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -22,7 +23,7 @@ public class BlogsDefaultEntity implements Serializable {
     }
 
     //首页图片
-    private String images;
+    private List<String> images;
 
     //多媒体
     private String multimedia;
@@ -53,6 +54,7 @@ public class BlogsDefaultEntity implements Serializable {
 
     //创建人
     @Field("create_time")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date createTime;
     private String create;
 
@@ -64,11 +66,11 @@ public class BlogsDefaultEntity implements Serializable {
     //是否删除 0 否 1 是
     private int dr;
 
-    public String getImages() {
+    public List<String> getImages() {
         return images;
     }
 
-    public void setImages(String images) {
+    public void setImages(List<String> images) {
         this.images = images;
     }
 

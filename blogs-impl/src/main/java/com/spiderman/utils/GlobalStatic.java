@@ -22,6 +22,21 @@ public class GlobalStatic {
     //链接跳转类型
     public static final String TYPE_LINK = "link";
 
+    public static boolean isCardType(String type) throws Exception {
+        switch (type){
+            case GlobalStatic.TYPE_SAYING:
+            case GlobalStatic.TYPE_LINK:
+                return false;
+            case GlobalStatic.TYPE_IMAGE:
+            case GlobalStatic.TYPE_IMAGES:
+            case GlobalStatic.TYPE_AUDIO:
+            case GlobalStatic.TYPE_VIDEO:
+                return true;
+            default:
+                throw new Exception("类型不正确");
+        }
+    }
+
     /**
      * 获取类型对应Class
      * @param type 类型

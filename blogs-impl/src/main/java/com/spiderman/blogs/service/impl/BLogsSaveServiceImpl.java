@@ -22,6 +22,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,10 +77,10 @@ public class BLogsSaveServiceImpl implements BlogsSaveService {
         if(firstListEntity != null){
             entity.setNext(firstListEntity.getBlogid());
         }
-
+        entity.setCreate(create);
+        entity.setCreateTime(new Date());
         BlogsDefaultEntity backEntity = mongoTemplate.save(entity);
 
-        entity.setCreate(create);
         //保存列表
         saveList(backEntity.getId(),backEntity.getType());
         BlogsDefaultVO backVO = new BlogsDefaultVO();

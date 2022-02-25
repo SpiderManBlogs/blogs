@@ -121,7 +121,7 @@ public class BlogsController {
             back.put("status",1);
         }catch (Exception e){
             back.put("status",0);
-            back.put("msg","保存失败：" + e.getMessage());
+            back.put("msg","查询失败：" + e.getMessage());
             log.error("queryCard查询失败：" + e.getMessage());
         }
         return back;

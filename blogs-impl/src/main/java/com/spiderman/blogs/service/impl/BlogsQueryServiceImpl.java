@@ -1,11 +1,16 @@
 package com.spiderman.blogs.service.impl;
 
-import com.spiderman.blogs.entity.BlogsLinkEntity;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.spiderman.blogs.entity.BlogsDefaultEntity;
 import com.spiderman.blogs.entity.BlogsListEntity;
-import com.spiderman.blogs.entity.BlogsSayingEntity;
 import com.spiderman.blogs.service.BlogsQueryService;
 import com.spiderman.blogs.vo.BlogsListVO;
+import com.spiderman.defdoc.service.DefdocQueryService;
+import com.spiderman.defdoc.vo.DefdocVO;
 import com.spiderman.utils.GlobalStatic;
+import com.spiderman.utils.QueryNullException;
 import com.spiderman.utils.QueryUtil;
 import org.bson.types.ObjectId;
 import org.springframework.beans.BeanUtils;
@@ -24,6 +29,8 @@ public class BlogsQueryServiceImpl implements BlogsQueryService {
 
     @Autowired
     private MongoTemplate mongoTemplate;
+    @Autowired
+    private DefdocQueryService defdocQueryService;
 
     @Override
     public List<BlogsListVO> queryPage(int pageSize, int pageThis) {
@@ -51,6 +58,24 @@ public class BlogsQueryServiceImpl implements BlogsQueryService {
 
     @Override
     public Object queryById(String id, String type) throws Exception {
-        return mongoTemplate.findById(new ObjectId(id),GlobalStatic.getClass(type));
+        Object byId = mongoTemplate.findById(new ObjectId(id), GlobalStatic.getClass(type));
+        if(GlobalStatic.isCardType(type)){
+            String jsonstr = JSON.toJSONStringWithDateFormat(byId, "yyyy-MM-dd HH:mm:ss", SerializerFeature.WriteDateUseDateFormat);
+            JSONObject backJson = JSONObject.parseObject(jsonstr);
+            if (backJson == null){
+                throw new QueryNullException("查询失败，博客id不存在。");
+            }
+            DefdocVO classify = defdocQueryService.queryDefDocByid(backJson.getString("classify"));
+            if (classify == null){
+                throw new QueryNullException("查询分类失败，分类id不存在。");
+            }
+            JSONObject classifyjsonObject = new JSONObject();
+            classifyjsonObject.put("id",classify.getDefdocid());
+            classifyjsonObject.put("name",classify.getDefdocname());
+            classifyjsonObject.put("code",classify.getDefdoccode());
+            backJson.put("classify",classifyjsonObject);
+            return backJson;
+        }
+        return byId;
     }
 }

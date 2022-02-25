@@ -53,5 +53,15 @@ public class DefdocQueryImplService implements DefdocQueryService {
         return backvos;
     }
 
-
+    @Override
+    public DefdocVO queryDefDocByid(String id) {
+        DefdocEntity byId = mongoTemplate.findById(id, DefdocEntity.class);
+        if(byId != null){
+            DefdocVO vo = new DefdocVO();
+            BeanUtils.copyProperties(byId,vo);
+            return vo;
+        }else{
+            return null;
+        }
+    }
 }

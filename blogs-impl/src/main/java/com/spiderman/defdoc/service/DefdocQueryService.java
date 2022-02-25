@@ -19,4 +19,11 @@ public interface DefdocQueryService {
      * @return 档案明细
      */
     List<DefdocVO> query(String id);
+
+    /**
+     * 详情查询
+     * @param id
+     * @return
+     */
+    DefdocVO queryDefDocByid(String id);
 }

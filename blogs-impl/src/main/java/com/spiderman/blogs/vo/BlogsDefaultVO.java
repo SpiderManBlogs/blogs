@@ -1,11 +1,13 @@
 package com.spiderman.blogs.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 import java.util.List;
 
 public class BlogsDefaultVO {
 
-    private String images;
+    private List<String> images;
     private String multimedia;
     private String title;
     private String describe;
@@ -15,15 +17,16 @@ public class BlogsDefaultVO {
     private String id;
     //类型 image\images\audio\video
     private String type;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date createTime;
     private String create;
 
 
-    public String getImages() {
+    public List<String> getImages() {
         return images;
     }
 
-    public void setImages(String images) {
+    public void setImages(List<String> images) {
         this.images = images;
     }
 
