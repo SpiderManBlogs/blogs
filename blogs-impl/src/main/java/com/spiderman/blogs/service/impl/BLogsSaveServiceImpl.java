@@ -1,9 +1,11 @@
 package com.spiderman.blogs.service.impl;
 
+import com.spiderman.blogs.entity.BlogsDefaultEntity;
 import com.spiderman.blogs.entity.BlogsLinkEntity;
 import com.spiderman.blogs.entity.BlogsListEntity;
 import com.spiderman.blogs.entity.BlogsSayingEntity;
 import com.spiderman.blogs.service.BlogsSaveService;
+import com.spiderman.blogs.vo.BlogsDefaultVO;
 import com.spiderman.blogs.vo.BlogsLinkVO;
 import com.spiderman.blogs.vo.BlogsSayingVO;
 import com.spiderman.utils.GlobalStatic;
@@ -13,7 +15,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,7 +63,31 @@ public class BLogsSaveServiceImpl implements BlogsSaveService {
         return backVO;
     }
 
-    private void saveList(String blogsid,String type){
+    @Override
+    public BlogsDefaultVO save(BlogsDefaultVO vo) {
+        BlogsDefaultEntity entity = new BlogsDefaultEntity(vo.getType());
+        BeanUtils.copyProperties(vo,entity);
+        //查找最新一篇 赋值给next
+        Criteria where = Criteria.where("dr").is(0).and("type").in("image","images","audio","video");
+        Query query = new Query(where);
+        query.with(Sort.by("order").descending());
+        query.limit(1);
+        BlogsListEntity firstListEntity = mongoTemplate.findOne(query, BlogsListEntity.class);
+        if(firstListEntity != null){
+            entity.setNext(firstListEntity.getBlogid());
+        }
+
+        BlogsDefaultEntity backEntity = mongoTemplate.save(entity);
+
+        entity.setCreate(create);
+        //保存列表
+        saveList(backEntity.getId(),backEntity.getType());
+        BlogsDefaultVO backVO = new BlogsDefaultVO();
+        BeanUtils.copyProperties(backEntity,backVO);
+        return backVO;
+    }
+
+    private void saveList(String blogsid, String type){
         BlogsListEntity listEntity = new BlogsListEntity(type);
         Map<String,Object> where = new HashMap<>();
         where.put("dr",0);

@@ -1,5 +1,6 @@
 package com.spiderman.utils;
 
+import com.spiderman.blogs.entity.BlogsDefaultEntity;
 import com.spiderman.blogs.entity.BlogsLinkEntity;
 import com.spiderman.blogs.entity.BlogsSayingEntity;
 
@@ -33,6 +34,11 @@ public class GlobalStatic {
                 return BlogsSayingEntity.class;
             case GlobalStatic.TYPE_LINK:
                 return BlogsLinkEntity.class;
+            case GlobalStatic.TYPE_IMAGE:
+            case GlobalStatic.TYPE_IMAGES:
+            case GlobalStatic.TYPE_AUDIO:
+            case GlobalStatic.TYPE_VIDEO:
+                return BlogsDefaultEntity.class;
             default:
                 throw new Exception("类型不正确");
         }

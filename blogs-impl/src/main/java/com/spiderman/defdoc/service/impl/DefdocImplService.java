@@ -49,6 +49,7 @@ public class DefdocImplService implements DefdocService {
         Map<String, Object> where = new HashMap<>();
         where.put("dr",0);
         where.put("defdoccode",entity.getDefdoccode());
+        where.put("defdoclistid",entity.getDefdoclistid());
         long count = mongoTemplate.count(QueryUtil.create(where), DefdocEntity.class);
         if (count > 0){
             throw new CheckoutException(entity.getDefdoccode() + "档案编码已存在。");

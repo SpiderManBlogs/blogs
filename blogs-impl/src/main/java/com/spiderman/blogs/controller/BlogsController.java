@@ -3,6 +3,7 @@ package com.spiderman.blogs.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.spiderman.blogs.service.BlogsQueryService;
 import com.spiderman.blogs.service.BlogsSaveService;
+import com.spiderman.blogs.vo.BlogsDefaultVO;
 import com.spiderman.blogs.vo.BlogsLinkVO;
 import com.spiderman.blogs.vo.BlogsListVO;
 import com.spiderman.blogs.vo.BlogsSayingVO;
@@ -63,6 +64,22 @@ public class BlogsController {
             back.put("status",0);
             back.put("msg","保存失败：" + e.getMessage());
             log.error("saveLink保存失败：" + e.getMessage());
+        }
+        return back;
+    }
+
+    @RequestMapping("/save")
+    @ResponseBody
+    public JSONObject save(@RequestBody BlogsDefaultVO defaultVO) {
+        JSONObject back = new JSONObject();
+        try {
+            BlogsDefaultVO backvo = blogsSaveService.save(defaultVO);
+            back.put("data",backvo);
+            back.put("status",1);
+        }catch (Exception e){
+            back.put("status",0);
+            back.put("msg","保存失败：" + e.getMessage());
+            log.error("save保存失败：" + e.getMessage());
         }
         return back;
     }

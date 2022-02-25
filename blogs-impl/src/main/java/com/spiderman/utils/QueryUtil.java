@@ -50,11 +50,10 @@ public class QueryUtil {
     public static Query create(Map<String,Object> where){
         Criteria cwhere = null;
         for (String key: where.keySet()) {
-            Criteria criteria = Criteria.where(key).is(where.get(key));
             if (cwhere == null){
-                cwhere = criteria;
+                cwhere = Criteria.where(key).is(where.get(key));
             }else {
-                cwhere.andOperator(criteria);
+                cwhere.and(key).is(where.get(key));
             }
         }
         assert cwhere != null;
