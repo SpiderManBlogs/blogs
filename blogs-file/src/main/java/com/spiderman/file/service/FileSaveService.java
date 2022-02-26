@@ -6,6 +6,7 @@ import com.spiderman.file.vo.FileVO;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 public interface FileSaveService {
 
@@ -21,5 +22,5 @@ public interface FileSaveService {
      * @param fileCode 文件编码
      * @return 文件流
      */
-    String queryImage(String fileCode) throws IOException;
+    List<String> queryImage(String... fileCode) throws IOException;
 }

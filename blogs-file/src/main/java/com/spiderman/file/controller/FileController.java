@@ -1,5 +1,6 @@
 package com.spiderman.file.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.spiderman.file.service.FileSaveService;
 import com.spiderman.file.vo.FileVO;
@@ -7,9 +8,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/file")
@@ -41,16 +42,18 @@ public class FileController {
 
     @RequestMapping("/query")
     @ResponseBody
-    public JSONObject queryImage(@RequestParam(value="fileCode") String fileCode) {
+    public JSONObject queryImage(@RequestBody JSONObject json) {
         JSONObject back = new JSONObject();
         try {
-            String imageBase64 = fileSaveService.queryImage(fileCode);
-            back.put("data","data:image/jpg;base64," + imageBase64);
+            JSONArray ids = json.getJSONArray("ids");
+            List<String> list = ids.toJavaList(String.class);
+            List<String> imageBase64 = fileSaveService.queryImage(list.toArray(new String[0]));
+            back.put("data",imageBase64);
             back.put("status",1);
         }catch (Exception e){
             back.put("status",0);
-            back.put("msg","文件上传错误：" + e.getMessage());
-            log.error("文件上传错误：" + e.getMessage());
+            back.put("msg","查询错误：" + e.getMessage());
+            log.error("查询错误：" + e.getMessage());
         }
         return back;
     }

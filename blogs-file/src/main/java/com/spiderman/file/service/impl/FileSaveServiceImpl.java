@@ -13,7 +13,9 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -40,13 +42,17 @@ public class FileSaveServiceImpl implements FileSaveService {
     }
 
     @Override
-    public String queryImage(String fileCode) throws IOException {
-        try (InputStream gridFSFile = fileDao.findFile(fileCode)) {
-            byte[] bytes = IOUtils.toByteArray(gridFSFile);
-            return Base64.getEncoder().encodeToString(bytes);
-        } catch (IOException ioe) {
-            log.error("查询图片流失败:" + ioe.getMessage());
-            throw ioe;
+    public List<String> queryImage(String... fileCode) throws IOException {
+        List<String> backBase64 = new ArrayList<>();
+        for (String id:fileCode) {
+            try (InputStream gridFSFile = fileDao.findFile(id)) {
+                byte[] bytes = IOUtils.toByteArray(gridFSFile);
+                backBase64.add("data:image/jpg;base64," +Base64.getEncoder().encodeToString(bytes));
+            } catch (IOException ioe) {
+                log.error("查询图片流失败:" + ioe.getMessage());
+                throw ioe;
+            }
         }
+        return backBase64;
     }
 }
