@@ -18,11 +18,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,8 +35,6 @@ public class BlogsQueryServiceImpl implements BlogsQueryService {
 
     @Autowired
     private MongoTemplate mongoTemplate;
-    @Autowired
-    private DefdocQueryService defdocQueryService;
 
     @Override
     public List<BlogsListVO> queryPage(int pageSize, int pageThis) {
