@@ -26,4 +26,11 @@ public interface DefdocQueryService {
      * @return
      */
     DefdocVO queryDefDocByid(String id);
+
+    /**
+     * 通过list编码查询档案详情
+     * @param code list编码
+     * @return 档案详情集合
+     */
+    List<DefdocVO> queryByCode(String code);
 }

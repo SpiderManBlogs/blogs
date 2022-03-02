@@ -1,7 +1,10 @@
 package com.spiderman.blogs.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.spiderman.defdoc.entity.DefdocEntity;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -35,13 +38,11 @@ public class BlogsDefaultEntity implements Serializable {
     private String describe;
 
     //分类
-    private String classify;
+    @DBRef
+    private DefdocEntity classify;
 
     //标签
     private List<String> tag;
-
-    //下一篇
-    private String next;
 
     //内容
     private String content;
@@ -65,6 +66,17 @@ public class BlogsDefaultEntity implements Serializable {
 
     //是否删除 0 否 1 是
     private int dr;
+
+    //下一篇
+    private ObjectId next;
+
+    public ObjectId getNext() {
+        return next;
+    }
+
+    public void setNext(ObjectId next) {
+        this.next = next;
+    }
 
     public List<String> getImages() {
         return images;
@@ -98,11 +110,11 @@ public class BlogsDefaultEntity implements Serializable {
         this.describe = describe;
     }
 
-    public String getClassify() {
+    public DefdocEntity getClassify() {
         return classify;
     }
 
-    public void setClassify(String classify) {
+    public void setClassify(DefdocEntity classify) {
         this.classify = classify;
     }
 
@@ -112,14 +124,6 @@ public class BlogsDefaultEntity implements Serializable {
 
     public void setTag(List<String> tag) {
         this.tag = tag;
-    }
-
-    public String getNext() {
-        return next;
-    }
-
-    public void setNext(String next) {
-        this.next = next;
     }
 
     public String getContent() {

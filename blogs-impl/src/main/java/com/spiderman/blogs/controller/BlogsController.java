@@ -73,6 +73,9 @@ public class BlogsController {
     public JSONObject save(@RequestBody BlogsDefaultVO defaultVO) {
         JSONObject back = new JSONObject();
         try {
+            if (defaultVO.getClassify() == null){
+                throw new Exception("分类不能为空!");
+            }
             BlogsDefaultVO backvo = blogsSaveService.save(defaultVO);
             back.put("data",backvo);
             back.put("status",1);

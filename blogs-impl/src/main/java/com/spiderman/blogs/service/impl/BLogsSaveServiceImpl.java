@@ -8,6 +8,8 @@ import com.spiderman.blogs.service.BlogsSaveService;
 import com.spiderman.blogs.vo.BlogsDefaultVO;
 import com.spiderman.blogs.vo.BlogsLinkVO;
 import com.spiderman.blogs.vo.BlogsSayingVO;
+import com.spiderman.defdoc.entity.DefdocEntity;
+import com.spiderman.defdoc.vo.DefdocVO;
 import com.spiderman.utils.GlobalStatic;
 import com.spiderman.utils.QueryUtil;
 import org.apache.logging.log4j.LogManager;
@@ -24,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -68,17 +71,22 @@ public class BLogsSaveServiceImpl implements BlogsSaveService {
     public BlogsDefaultVO save(BlogsDefaultVO vo) {
         BlogsDefaultEntity entity = new BlogsDefaultEntity(vo.getType());
         BeanUtils.copyProperties(vo,entity);
-        //查找最新一篇 赋值给next
-        Criteria where = Criteria.where("dr").is(0).and("type").in("image","images","audio","video");
-        Query query = new Query(where);
-        query.with(Sort.by("order").descending());
-        query.limit(1);
-        BlogsListEntity firstListEntity = mongoTemplate.findOne(query, BlogsListEntity.class);
-        if(firstListEntity != null){
-            entity.setNext(firstListEntity.getBlogid());
-        }
+        DefdocEntity defdocEntity = new DefdocEntity();
+        BeanUtils.copyProperties(vo.getClassify(),defdocEntity);
+        entity.setClassify(defdocEntity);
         entity.setCreate(create);
         entity.setCreateTime(new Date());
+
+        Query query = new Query();
+        Criteria criteria = Criteria.where("dr").is(0).and("type").in("image","images","audio","video");
+        query.addCriteria(criteria);
+        query.with(Sort.by("order").descending());
+        query.limit(1);
+        List<BlogsListEntity> blogsListEntities = mongoTemplate.find(query, BlogsListEntity.class);
+        if (blogsListEntities.size() > 0){
+            entity.setNext(blogsListEntities.get(0).getBlogid_obj());
+        }
+
         BlogsDefaultEntity backEntity = mongoTemplate.save(entity);
 
         //保存列表

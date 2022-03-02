@@ -1,6 +1,7 @@
 package com.spiderman.blogs.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.spiderman.defdoc.vo.DefdocVO;
 
 import java.util.Date;
 import java.util.List;
@@ -11,7 +12,7 @@ public class BlogsDefaultVO {
     private String multimedia;
     private String title;
     private String describe;
-    private String classify;
+    private DefdocVO classify;
     private List<String> tag;
     private String content;
     private String id;
@@ -21,6 +22,27 @@ public class BlogsDefaultVO {
     private Date createTime;
     private String create;
 
+
+    //下一篇
+    private String next;
+    //上一篇
+    private String prev;
+
+    public String getNext() {
+        return next;
+    }
+
+    public void setNext(String next) {
+        this.next = next;
+    }
+
+    public String getPrev() {
+        return prev;
+    }
+
+    public void setPrev(String prev) {
+        this.prev = prev;
+    }
 
     public List<String> getImages() {
         return images;
@@ -54,11 +76,11 @@ public class BlogsDefaultVO {
         this.describe = describe;
     }
 
-    public String getClassify() {
+    public DefdocVO getClassify() {
         return classify;
     }
 
-    public void setClassify(String classify) {
+    public void setClassify(DefdocVO classify) {
         this.classify = classify;
     }
 

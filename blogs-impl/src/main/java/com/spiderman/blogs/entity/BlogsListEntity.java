@@ -1,5 +1,6 @@
 package com.spiderman.blogs.entity;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -19,7 +20,7 @@ public class BlogsListEntity implements Serializable {
     @Id
     private String id;
 
-    private String blogid;
+    private ObjectId blogid;
 
     private String type;
 
@@ -43,12 +44,16 @@ public class BlogsListEntity implements Serializable {
         this.id = id;
     }
 
-    public String getBlogid() {
+    public ObjectId getBlogid_obj() {
         return blogid;
     }
 
+    public String getBlogid() {
+        return blogid.toString();
+    }
+
     public void setBlogid(String blogid) {
-        this.blogid = blogid;
+        this.blogid = new ObjectId(blogid);
     }
 
     public long getOrder() {

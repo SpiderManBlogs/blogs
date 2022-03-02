@@ -105,6 +105,23 @@ public class DefdocController {
         return back;
     }
 
+    @RequestMapping("/queryByCode")
+    @ResponseBody
+    public JSONObject queryByCode(@RequestBody JSONObject json) {
+        JSONObject back = new JSONObject();
+        try {
+            String code = json.getString("code");
+            List<DefdocVO> backvo = defdocQueryService.queryByCode(code);
+            back.put("data",backvo);
+            back.put("status",1);
+        }catch (Exception e){
+            back.put("status",0);
+            back.put("msg","查询失败：" + e.getMessage());
+            log.error("query查询失败：" + e.getMessage());
+        }
+        return back;
+    }
+
     @RequestMapping("/saveDefdoc")
     @ResponseBody
     public JSONObject saveDefdoc(@RequestBody DefdocVO defdoc) {

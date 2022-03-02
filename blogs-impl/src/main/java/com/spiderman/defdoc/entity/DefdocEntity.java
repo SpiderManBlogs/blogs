@@ -1,5 +1,6 @@
 package com.spiderman.defdoc.entity;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -11,7 +12,7 @@ import java.io.Serializable;
 @Document(collection = "defdoc")
 public class DefdocEntity implements Serializable {
 
-    private String defdoclistid;
+    private ObjectId defdoclistid;
     @Id
     private String defdocid;
     private String defdocname;
@@ -22,11 +23,11 @@ public class DefdocEntity implements Serializable {
     private int dr;
 
     public String getDefdoclistid() {
-        return defdoclistid;
+        return defdoclistid.toString();
     }
 
     public void setDefdoclistid(String defdoclistid) {
-        this.defdoclistid = defdoclistid;
+        this.defdoclistid = new ObjectId(defdoclistid);
     }
 
     public String getDefdocid() {
