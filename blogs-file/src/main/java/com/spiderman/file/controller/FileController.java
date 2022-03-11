@@ -10,6 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 @Controller
@@ -56,6 +62,37 @@ public class FileController {
             log.error("查询错误：" + e.getMessage());
         }
         return back;
+    }
+
+    @RequestMapping("/queryFile")
+    @ResponseBody
+    public void queryFile(@RequestParam String id, HttpServletResponse response) {
+        InputStream inputStream = null;
+        OutputStream outputStream = null;
+        try {
+            response.setHeader("content-disposition", "attachment;filename="+id + ".mp3");
+            outputStream = response.getOutputStream();
+            int len = 0;
+            byte[] buffer = new byte[1024];
+            inputStream = fileSaveService.queryFile(id).getInputStream();
+            while ((len = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, len);
+            }
+        } catch (Exception e) {
+            log.error("查询错误：" + e.getMessage());
+        } finally {
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            } catch (IOException e) {
+                log.error("关闭流错误：" + e.getMessage());
+            }
+
+        }
     }
 
 }

@@ -3,6 +3,7 @@ package com.spiderman.file.service;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.spiderman.file.entity.FileEntity;
 import com.spiderman.file.vo.FileVO;
+import org.springframework.data.mongodb.gridfs.GridFsResource;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,4 +24,13 @@ public interface FileSaveService {
      * @return 文件流
      */
     List<String> queryImage(String... fileCode) throws IOException;
+
+
+    /**
+     * 文件查询
+     * @param fileCode 文件编码
+     * @return 文件流
+     * @throws IOException 异常
+     */
+    GridFsResource queryFile(String fileCode) throws IOException;
 }

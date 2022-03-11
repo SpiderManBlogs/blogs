@@ -41,12 +41,11 @@ public class FileDaoImpl implements FileDao {
     }
 
     @Override
-    public InputStream findFile(String fileCode) throws IOException {
+    public GridFsResource findFile(String fileCode){
         Query query = new Query(Criteria.where("_id").is(fileCode));
         GridFSFile fsFile = gridFsTemplate.findOne(query);
         assert fsFile != null;
         GridFSDownloadStream gridFSDownloadStream = GridFSBuckets.create(mongodbFactory.getDb()).openDownloadStream(fsFile.getObjectId());
-        GridFsResource gridFsResource = new GridFsResource(fsFile, gridFSDownloadStream);
-        return gridFsResource.getInputStream();
+        return new GridFsResource(fsFile, gridFSDownloadStream);
     }
 }

@@ -3,6 +3,7 @@ package com.spiderman.file.dao;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.spiderman.file.entity.FileEntity;
 import org.apache.commons.fileupload.FileItem;
+import org.springframework.data.mongodb.gridfs.GridFsResource;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,5 +31,5 @@ public interface FileDao {
      * @param fileCode 文件_id
      * @return 文件流
      */
-    InputStream findFile(String fileCode) throws IOException;
+    GridFsResource findFile(String fileCode);
 }

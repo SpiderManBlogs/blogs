@@ -8,6 +8,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
@@ -45,8 +46,9 @@ public class FileSaveServiceImpl implements FileSaveService {
     public List<String> queryImage(String... fileCode) throws IOException {
         List<String> backBase64 = new ArrayList<>();
         for (String id:fileCode) {
-            try (InputStream gridFSFile = fileDao.findFile(id)) {
-                byte[] bytes = IOUtils.toByteArray(gridFSFile);
+            try {
+                GridFsResource gridFsResource = queryFile(id);
+                byte[] bytes = IOUtils.toByteArray(gridFsResource.getInputStream());
                 backBase64.add("data:image/jpg;base64," +Base64.getEncoder().encodeToString(bytes));
             } catch (IOException ioe) {
                 log.error("查询图片流失败:" + ioe.getMessage());
@@ -54,5 +56,10 @@ public class FileSaveServiceImpl implements FileSaveService {
             }
         }
         return backBase64;
+    }
+
+    @Override
+    public GridFsResource queryFile(String fileCode){
+        return fileDao.findFile(fileCode);
     }
 }
