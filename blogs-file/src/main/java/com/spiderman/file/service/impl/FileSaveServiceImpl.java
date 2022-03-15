@@ -34,8 +34,8 @@ public class FileSaveServiceImpl implements FileSaveService {
             return null;
         }
         String fileId = UUID.randomUUID().toString();
-        FileEntity entity = new FileEntity(fileId,image.getName(),image.getSize(),file.getBlogsId(),file.getFieldId());
-        String imageName = fileId + "_" + file.getBlogsId() + "_" + file.getFieldId();
+        FileEntity entity = new FileEntity(fileId,image.getFileItem().getName(),image.getFileItem().getSize(),file.getBlogsId(),file.getFieldId());
+        String imageName = fileId + "_" + image.getFileItem().getName();
         String imageCode = fileDao.insertFile(image.getInputStream(), imageName);
         entity.setFileCode(imageCode);
         FileEntity backEntity = fileDao.insert(entity);
