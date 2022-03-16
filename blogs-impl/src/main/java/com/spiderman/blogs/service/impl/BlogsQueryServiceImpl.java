@@ -86,6 +86,7 @@ public class BlogsQueryServiceImpl implements BlogsQueryService {
                         JSONObject jsonNext = new JSONObject();
                         jsonNext.put("id", item.getId());
                         jsonNext.put("title", item.getTitle());
+                        jsonNext.put("type", item.getType());
                         return jsonNext;
                     }).collect(Collectors.toMap(item -> item.getString("id").equals(next == null ? "null" : next.toString()) ? "next" : "prev", item -> item));
             backJson.put("prev",collect.get("prev"));

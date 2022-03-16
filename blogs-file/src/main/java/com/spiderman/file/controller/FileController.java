@@ -8,8 +8,10 @@ import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletOutputStream;
@@ -26,6 +28,12 @@ public class FileController {
 
     @Autowired
     private FileSaveService fileSaveService;
+
+    @Value("${video.base}")
+    private String BASEPATH;
+
+    @Value("${video.section}")
+    private String SECTION;
 
 
     @RequestMapping("/insert")
@@ -164,7 +172,12 @@ public class FileController {
     @RequestMapping("/queryM3U8/{id}/{name}.m3u8")
     @ResponseBody
     public void queryM3U8(@PathVariable(value = "id") String id,@PathVariable(value = "name") String name, HttpServletResponse response) {
-        queryM3U8Util(id,name,".m3u8",response);
+        String fileName = fileSaveService.downFile(id);
+        if ("文件存在".equals(fileName)){
+            queryM3U8Util(id,name,".m3u8",response);
+        }else if (!StringUtils.isEmpty(fileName) && fileSaveService.sectionFile(id,fileName)){
+            queryM3U8Util(id,name,".m3u8",response);
+        }
     }
 
     @RequestMapping("/queryM3U8/{id}/{name}.ts")
@@ -174,7 +187,8 @@ public class FileController {
     }
 
     private void queryM3U8Util(String id,String name,String type,HttpServletResponse response){
-        String fileUrl = "D:\\tmp\\video\\" + id + "\\" + name+type;
+        // TODO 校验是否存在文件，否则创建 使用ffmpeg制作切片
+        String fileUrl = BASEPATH + id + SECTION + name+type;
         File file = new File(fileUrl);
         InputStream inputStream = null;
         try {

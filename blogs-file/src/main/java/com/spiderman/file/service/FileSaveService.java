@@ -33,4 +33,12 @@ public interface FileSaveService {
      * @throws IOException 异常
      */
     GridFsResource queryFile(String fileCode) throws IOException;
+
+    /**
+     * 视频文件切片
+     * @param id 文件编码
+     */
+    boolean sectionFile(String id,String fileName);
+
+    String downFile(String id);
 }

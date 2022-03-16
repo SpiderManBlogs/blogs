@@ -10,6 +10,8 @@
            http://www.springframework.org/schema/context
            http://www.springframework.org/schema/context/spring-context.xsd">
 
+    <!-- 加载mongodb的属性配置文件 -->
+    <context:property-placeholder location="classpath:mongodb.properties,classpath:blogs.properties" />
 
     <mvc:cors>
         <mvc:mapping path="/**"/>
