@@ -54,24 +54,6 @@ public class FileController {
         return back;
     }
 
-    @RequestMapping("/query")
-    @ResponseBody
-    public JSONObject queryImage(@RequestBody JSONObject json) {
-        JSONObject back = new JSONObject();
-        try {
-            JSONArray ids = json.getJSONArray("ids");
-            List<String> list = ids.toJavaList(String.class);
-            List<String> imageBase64 = fileSaveService.queryImage(list.toArray(new String[0]));
-            back.put("data",imageBase64);
-            back.put("status",1);
-        }catch (Exception e){
-            back.put("status",0);
-            back.put("msg","查询错误：" + e.getMessage());
-            log.error("查询错误：" + e.getMessage());
-        }
-        return back;
-    }
-
     @RequestMapping("/queryImage/{id}")
     @ResponseBody
     public void queryImage(@PathVariable(value = "id") String id, HttpServletResponse response) {
@@ -187,7 +169,6 @@ public class FileController {
     }
 
     private void queryM3U8Util(String id,String name,String type,HttpServletResponse response){
-        // TODO 校验是否存在文件，否则创建 使用ffmpeg制作切片
         String fileUrl = BASEPATH + id + SECTION + name+type;
         File file = new File(fileUrl);
         InputStream inputStream = null;

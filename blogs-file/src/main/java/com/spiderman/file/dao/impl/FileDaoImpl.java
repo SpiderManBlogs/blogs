@@ -14,7 +14,6 @@ import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 @Repository
@@ -25,9 +24,6 @@ public class FileDaoImpl implements FileDao {
 
     @Autowired
     private GridFsTemplate gridFsTemplate;
-
-    @Autowired
-    private MongoTemplate mongodbFactory;
 
     @Override
     public FileEntity insert(FileEntity file) {
@@ -45,7 +41,7 @@ public class FileDaoImpl implements FileDao {
         Query query = new Query(Criteria.where("_id").is(fileCode));
         GridFSFile fsFile = gridFsTemplate.findOne(query);
         assert fsFile != null;
-        GridFSDownloadStream gridFSDownloadStream = GridFSBuckets.create(mongodbFactory.getDb()).openDownloadStream(fsFile.getObjectId());
+        GridFSDownloadStream gridFSDownloadStream = GridFSBuckets.create(mongoTemplate.getDb()).openDownloadStream(fsFile.getObjectId());
         return new GridFsResource(fsFile, gridFSDownloadStream);
     }
 }

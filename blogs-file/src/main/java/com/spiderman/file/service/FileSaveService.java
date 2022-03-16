@@ -1,13 +1,9 @@
 package com.spiderman.file.service;
 
-import com.mongodb.client.gridfs.model.GridFSFile;
-import com.spiderman.file.entity.FileEntity;
 import com.spiderman.file.vo.FileVO;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
 
 public interface FileSaveService {
 
@@ -17,14 +13,6 @@ public interface FileSaveService {
      * @return 文件id
      */
     String insert(FileVO file) throws IOException;
-
-    /**
-     * 文件查询
-     * @param fileCode 文件编码
-     * @return 文件流
-     */
-    List<String> queryImage(String... fileCode) throws IOException;
-
 
     /**
      * 文件查询
@@ -40,5 +28,10 @@ public interface FileSaveService {
      */
     boolean sectionFile(String id,String fileName);
 
+    /**
+     * 文件下载存储
+     * @param id 文件编码
+     * @return 文件名称
+     */
     String downFile(String id);
 }

@@ -50,22 +50,6 @@ public class FileSaveServiceImpl implements FileSaveService {
     }
 
     @Override
-    public List<String> queryImage(String... fileCode) throws IOException {
-        List<String> backBase64 = new ArrayList<>();
-        for (String id:fileCode) {
-            try {
-                GridFsResource gridFsResource = queryFile(id);
-                byte[] bytes = IOUtils.toByteArray(gridFsResource.getInputStream());
-                backBase64.add("data:image/jpg;base64," +Base64.getEncoder().encodeToString(bytes));
-            } catch (IOException ioe) {
-                log.error("查询图片流失败:" + ioe.getMessage());
-                throw ioe;
-            }
-        }
-        return backBase64;
-    }
-
-    @Override
     public GridFsResource queryFile(String fileCode){
         return fileDao.findFile(fileCode);
     }
@@ -124,9 +108,10 @@ public class FileSaveServiceImpl implements FileSaveService {
     @Override
     public boolean sectionFile(String id,String fileName) {
         try {
-            log.debug("开始:转码文件");
-
-            log.debug("结束:转码文件");
+//            log.debug("开始:转码文件");
+//
+//            log.debug("结束:转码文件");
+            //已测试:mp4、flv格式
             log.debug("开始:切片文件");
             List<String> commands = new ArrayList<>();
             commands.add("ffmpeg");
