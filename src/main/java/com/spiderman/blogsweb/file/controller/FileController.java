@@ -2,7 +2,6 @@ package com.spiderman.blogsweb.file.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.spiderman.blogsweb.file.service.FileSaveService;
-import com.spiderman.blogsweb.file.vo.FileVO;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,10 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -37,7 +34,7 @@ public class FileController {
 
     @RequestMapping("/insert")
     @ResponseBody
-    public JSONObject insert(FileVO file) {
+    public JSONObject insert(@RequestBody MultipartFile file) {
         JSONObject back = new JSONObject();
         try {
             log.debug("文件上传日志：" + file.toString());

@@ -4,14 +4,13 @@ import com.spiderman.blogsweb.file.dao.FileDao;
 import com.spiderman.blogsweb.file.entity.FileEntity;
 import com.spiderman.blogsweb.file.service.FileSaveService;
 import com.spiderman.blogsweb.file.util.FfmpegUtil;
-import com.spiderman.blogsweb.file.vo.FileVO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -36,15 +35,14 @@ public class FileSaveServiceImpl implements FileSaveService {
     private String FFMPEG;
 
     @Override
-    public String insert(FileVO file) throws IOException {
-        CommonsMultipartFile image = file.getFile();
-        if(image == null){
+    public String insert(MultipartFile file) throws IOException {
+        if(file == null){
             return null;
         }
         String fileId = UUID.randomUUID().toString();
-        FileEntity entity = new FileEntity(fileId,image.getFileItem().getName(),image.getFileItem().getSize(),file.getBlogsId(),file.getFieldId());
-        String imageName = fileId + "_" + image.getFileItem().getName();
-        String imageCode = fileDao.insertFile(image.getInputStream(), imageName);
+        FileEntity entity = new FileEntity(fileId,file.getName(),file.getSize(),null,null);
+        String imageName = fileId + "_" + file.getName();
+        String imageCode = fileDao.insertFile(file.getInputStream(), imageName);
         entity.setFileCode(imageCode);
         FileEntity backEntity = fileDao.insert(entity);
         return backEntity.getFileCode();

@@ -1,7 +1,7 @@
 package com.spiderman.blogsweb.file.service;
 
-import com.spiderman.blogsweb.file.vo.FileVO;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -12,7 +12,7 @@ public interface FileSaveService {
      * @param file 文件vo
      * @return 文件id
      */
-    String insert(FileVO file) throws IOException;
+    String insert(MultipartFile file) throws IOException;
 
     /**
      * 文件查询
