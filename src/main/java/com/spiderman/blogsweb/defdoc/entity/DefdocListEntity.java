@@ -1,5 +1,6 @@
 package com.spiderman.blogsweb.defdoc.entity;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -19,9 +20,23 @@ public class DefdocListEntity implements Serializable {
     private int enablement;
     //是否删除 0 否 1 是
     private int dr;
+    //描述
+    private String goal;
+
+    public String getGoal() {
+        return goal;
+    }
+
+    public void setGoal(String goal) {
+        this.goal = goal;
+    }
 
     public String getDefdoclistid() {
         return defdoclistid;
+    }
+
+    public ObjectId getDefdoclist_id() {
+        return new ObjectId(defdoclistid);
     }
 
     public void setDefdoclistid(String defdoclistid) {

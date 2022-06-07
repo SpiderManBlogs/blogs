@@ -8,6 +8,17 @@ public class DefdocListVO {
     //是否启动 0 否 1 是
     private int enablement;
 
+    //描述
+    private String goal;
+
+    public String getGoal() {
+        return goal;
+    }
+
+    public void setGoal(String goal) {
+        this.goal = goal;
+    }
+
     public int getEnablement() {
         return enablement;
     }

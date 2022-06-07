@@ -1,5 +1,6 @@
 package com.spiderman.blogsweb.defdoc.service.impl;
 
+import com.spiderman.blogsweb.admin.model.DefdocListQueryModel;
 import com.spiderman.blogsweb.defdoc.entity.DefdocEntity;
 import com.spiderman.blogsweb.defdoc.entity.DefdocListEntity;
 import com.spiderman.blogsweb.defdoc.service.DefdocQueryService;
@@ -17,6 +18,7 @@ import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.LookupOperation;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,11 +36,15 @@ public class DefdocQueryImplService implements DefdocQueryService {
     private MongoTemplate mongoTemplate;
 
     @Override
-    public List<DefdocListVO> query() {
+    public List<DefdocListVO> query(ObjectId... id) {
         Map<String, Object> where = new HashMap<>();
         where.put("dr",0);
+        Query query = QueryUtil.create(where);
+        if (id.length > 0){
+            query.addCriteria(Criteria.where("_id").in(id));
+        }
 //        where.put("enablement",1);
-        List<DefdocListEntity> backentity = mongoTemplate.find(QueryUtil.create(where), DefdocListEntity.class);
+        List<DefdocListEntity> backentity = mongoTemplate.find(query, DefdocListEntity.class);
         List<DefdocListVO> backvos = new ArrayList<>();
         for (DefdocListEntity entity:backentity) {
             DefdocListVO vo = new DefdocListVO();
@@ -46,6 +52,14 @@ public class DefdocQueryImplService implements DefdocQueryService {
             backvos.add(vo);
         }
         return backvos;
+    }
+
+    @Override
+    public List<ObjectId> queryAllId(DefdocListQueryModel querySearch) {
+        Query query = querySearch.getQuery();
+        query.fields().include("_id");
+        List<DefdocListEntity> backentity = mongoTemplate.find(query, DefdocListEntity.class);
+        return backentity.stream().map(DefdocListEntity::getDefdoclist_id).collect(Collectors.toList());
     }
 
     @Override
