@@ -1,12 +1,12 @@
 package com.spiderman.blogsweb.admin.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.spiderman.blogsweb.admin.model.DefdocListQueryModel;
 import com.spiderman.blogsweb.admin.model.Result;
 import com.spiderman.blogsweb.admin.model.TableListResult;
 import com.spiderman.blogsweb.defdoc.service.DefdocQueryService;
 import com.spiderman.blogsweb.defdoc.service.DefdocService;
 import com.spiderman.blogsweb.defdoc.vo.DefdocListVO;
+import com.spiderman.blogsweb.defdoc.vo.DefdocVO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.types.ObjectId;
@@ -101,6 +101,31 @@ public class AdminDefdocController {
             result.fail();
             result.setErrorMessage("删除失败：" + e.getMessage());
             log.error("deleteDefdoclist删除失败：" + e.getMessage());
+        }
+        return result;
+    }
+
+
+
+    @RequestMapping("/saveDefdoc")
+    @ResponseBody
+    public Result saveDefdoc(@RequestBody DefdocVO... defdoc) {
+        Result result = Result.instance();
+        try {
+            List<DefdocVO> defdocs = Arrays.stream(defdoc)
+                    .filter(item -> StringUtils.hasText(item.getDefdocname()) && StringUtils.hasText(item.getDefdoccode()))
+                    .collect(Collectors.toList());
+            List<DefdocVO> backvo = new ArrayList<>();
+            List<DefdocVO> backadd = defdocService.add(defdocs.stream().filter(item -> !StringUtils.hasText(item.getDefdoclistid())).toArray(DefdocVO[]::new));
+            List<DefdocVO> backedit = defdocService.edit(defdocs.stream().filter(item -> StringUtils.hasText(item.getDefdoclistid())).toArray(DefdocVO[]::new));
+            backvo.addAll(backadd);
+            backvo.addAll(backedit);
+            result.success();
+            result.put("data",backvo);
+        }catch (Exception e){
+            result.fail();
+            result.setErrorMessage("保存失败：" + e.getMessage());
+            log.error("saveDefdoclist保存失败：" + e.getMessage());
         }
         return result;
     }

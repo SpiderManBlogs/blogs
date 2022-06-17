@@ -14,8 +14,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class DefdocImplService implements DefdocService {
@@ -43,23 +42,36 @@ public class DefdocImplService implements DefdocService {
     }
 
     @Override
-    public DefdocVO add(DefdocVO defdoc) throws CheckoutException {
-        DefdocEntity entity = new DefdocEntity();
-        BeanUtils.copyProperties(defdoc,entity);
-        Map<String, Object> where = new HashMap<>();
-        where.put("dr",0);
-        where.put("defdoccode",entity.getDefdoccode());
-        where.put("defdoclistid",entity.getDefdoclistid());
-        long count = mongoTemplate.count(QueryUtil.create(where), DefdocEntity.class);
-        if (count > 0){
-            throw new CheckoutException(entity.getDefdoccode() + "档案编码已存在。");
+    public List<DefdocVO> add(DefdocVO... defdocs) throws CheckoutException {
+        List<DefdocVO> backs = new ArrayList<>();
+        List<DefdocEntity> saveEntitys= new ArrayList<>();
+        int length = Arrays.stream(defdocs).map(DefdocVO::getDefdoccode).toArray().length;
+        int length2 = Arrays.stream(defdocs).map(DefdocVO::getDefdoccode).distinct().toArray().length;
+        if (length != length2){
+            throw new CheckoutException("档案编码不能重复。");
         }
-        entity.setEnablement(1);
-        entity.setDr(0);
-        DefdocEntity save = mongoTemplate.save(entity);
-        DefdocVO backvo = new DefdocVO();
-        BeanUtils.copyProperties(save,backvo);
-        return backvo;
+        for (DefdocVO defdoc:defdocs) {
+            DefdocEntity entity = new DefdocEntity();
+            BeanUtils.copyProperties(defdoc,entity);
+            Map<String, Object> where = new HashMap<>();
+            where.put("dr",0);
+            where.put("defdoccode",entity.getDefdoccode());
+            where.put("defdoclistid",entity.getDefdoclistid());
+            long count = mongoTemplate.count(QueryUtil.create(where), DefdocEntity.class);
+            if (count > 0){
+                throw new CheckoutException(entity.getDefdoccode() + "档案编码已存在。");
+            }
+            entity.setEnablement(1);
+            entity.setDr(0);
+            saveEntitys.add(entity);
+        }
+        saveEntitys.forEach(entity -> {
+            DefdocEntity save = mongoTemplate.save(entity);
+            DefdocVO backvo = new DefdocVO();
+            BeanUtils.copyProperties(save,backvo);
+            backs.add(backvo);
+        });
+        return backs;
     }
 
     @Override
@@ -101,16 +113,18 @@ public class DefdocImplService implements DefdocService {
     }
 
     @Override
-    public DefdocVO edit(DefdocVO defdoc) throws QueryNullException {
-        DefdocEntity byId = mongoTemplate.findById(defdoc.getDefdocid(), DefdocEntity.class);
-        if(byId == null){
-            throw new QueryNullException("id查询为null:" + defdoc.getDefdocid());
+    public List<DefdocVO> edit(DefdocVO... defdocs) throws QueryNullException {
+        for (DefdocVO defdoc:defdocs) {
+            DefdocEntity byId = mongoTemplate.findById(defdoc.getDefdocid(), DefdocEntity.class);
+            if(byId == null){
+                throw new QueryNullException("id查询为null:" + defdoc.getDefdocid());
+            }
+            byId.setDr(1);
+            Update update = new Update();
+            update.set("defdocname",defdoc.getDefdocname());
+            update.set("enablement",defdoc.getEnablement());
+            mongoTemplate.upsert(QueryUtil.create(defdoc.getDefdocid()), update, DefdocEntity.class);
         }
-        byId.setDr(1);
-        Update update = new Update();
-        update.set("defdocname",defdoc.getDefdocname());
-        update.set("enablement",defdoc.getEnablement());
-        mongoTemplate.upsert(QueryUtil.create(defdoc.getDefdocid()), update, DefdocEntity.class);
-        return defdoc;
+        return Arrays.asList(defdocs);
     }
 }

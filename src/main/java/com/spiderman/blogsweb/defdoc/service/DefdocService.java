@@ -6,6 +6,8 @@ import com.spiderman.blogsweb.defdoc.vo.DefdocVO;
 import com.spiderman.blogsweb.utils.CheckoutException;
 import com.spiderman.blogsweb.utils.QueryNullException;
 
+import java.util.List;
+
 public interface DefdocService {
 
     /**
@@ -20,7 +22,7 @@ public interface DefdocService {
      * @param defdoc 档案明细
      * @return 保存后明细
      */
-    DefdocVO add(DefdocVO defdoc) throws CheckoutException;
+    List<DefdocVO> add(DefdocVO... defdoc) throws CheckoutException;
 
     /**
      * 删除档案
@@ -46,5 +48,5 @@ public interface DefdocService {
      * @param defdoc 档案明细vo
      * @return 修改后的结果
      */
-    DefdocVO edit(DefdocVO defdoc) throws QueryNullException;
+    List<DefdocVO> edit(DefdocVO... defdoc) throws QueryNullException;
 }
