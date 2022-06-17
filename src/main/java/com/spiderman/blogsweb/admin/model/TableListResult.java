@@ -8,7 +8,7 @@ import com.spiderman.blogsweb.admin.consts.ResultConsts;
  */
 public class TableListResult extends JSONObject {
 
-    public TableListResult setData(int current,int pageSize,int total,Object data){
+    public TableListResult setData(int current,int pageSize,long total,Object data){
         this.put("current",current);
         this.put("pageSize",pageSize);
         this.put("total",total);
