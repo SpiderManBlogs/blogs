@@ -5,7 +5,7 @@ import com.spiderman.blogsweb.admin.model.Result;
 import com.spiderman.blogsweb.admin.model.TableListResult;
 import com.spiderman.blogsweb.classification.entity.ClassificationEntity;
 import com.spiderman.blogsweb.classification.model.ClassificationModel;
-import com.spiderman.blogsweb.classification.service.ClassificationQyeruService;
+import com.spiderman.blogsweb.classification.service.ClassificationQueryService;
 import com.spiderman.blogsweb.classification.service.ClassificationService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,7 +21,7 @@ public class AdminClassificationController {
     private static final Logger log = LogManager.getLogger(AdminClassificationController.class.getName());
 
     private ClassificationService service;
-    private ClassificationQyeruService query;
+    private ClassificationQueryService query;
 
     @Autowired
     public void setService(ClassificationService service) {
@@ -29,7 +29,7 @@ public class AdminClassificationController {
     }
 
     @Autowired
-    public void setQuery(ClassificationQyeruService query) {
+    public void setQuery(ClassificationQueryService query) {
         this.query = query;
     }
 
@@ -93,7 +93,7 @@ public class AdminClassificationController {
         return result;
     }
 
-    @RequestMapping("/untenable")
+    @RequestMapping("/unenable")
     @ResponseBody
     public Result unenable(@RequestParam String id){
         Result result = Result.instance();

@@ -1,21 +1,26 @@
 package com.spiderman.blogsweb.blogs.vo;
 
-public class BlogsLinkVO {
+import com.spiderman.blogsweb.base.model.BaseModel;
+import com.spiderman.blogsweb.blogs.converter.BlogType;
 
-    private String id;
+public class BlogsLinkVO extends BaseModel {
 
     //简述
     private String sketch;
-
     //链接地址
     private String url;
 
-    public String getId() {
-        return id;
+    private BlogType blogtype;
+
+    // 创建人
+    private String creator;
+
+    public String getCreator() {
+        return creator;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setCreator(String creator) {
+        this.creator = creator;
     }
 
     public String getSketch() {
@@ -32,5 +37,13 @@ public class BlogsLinkVO {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public BlogType getBlogtype() {
+        return blogtype;
+    }
+
+    public void setBlogtype(BlogType blogtype) {
+        this.blogtype = blogtype;
     }
 }

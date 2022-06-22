@@ -4,9 +4,7 @@ import com.spiderman.blogsweb.classification.entity.ClassificationEntity;
 import com.spiderman.blogsweb.classification.model.ClassificationModel;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
-
-public interface ClassificationQyeruService {
+public interface ClassificationQueryService {
 
     /**
      * 分页查询
@@ -15,10 +13,4 @@ public interface ClassificationQyeruService {
      */
     Page<ClassificationEntity> queryAll(ClassificationModel querySearch);
 
-    /**
-     * 查询总条数
-     * @param querySearch 查询条件
-     * @return 总条数
-     */
-    long count(ClassificationModel querySearch);
 }

@@ -1,103 +1,43 @@
 package com.spiderman.blogsweb.blogs.entity;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+import com.spiderman.blogsweb.base.entity.BaseEntity;
+import com.spiderman.blogsweb.blogs.converter.BlogType;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
-import java.io.Serializable;
-import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * 链接引用实体
  */
-@Document(collection = "blogs_link")
-public class BlogsLinkEntity implements Serializable {
-
-    public BlogsLinkEntity(String type) {
-        this.dr = 0;
-        this.createTime = new Date();
-        this.type = type;
-    }
+@Entity
+@Table(name = "blogs_link")
+@SQLDelete(sql = "update blogs_link set dr = 1 where id = ?")
+@Where(clause = "dr = 0")
+public class BlogsLinkEntity extends BaseEntity {
 
     //简述
+    @Column(length = 1000)
     private String sketch;
 
     //链接
+    @Column(length = 1000)
     private String url;
 
-    @Id
-    private String id;
-
     //类型 saying
-    private String type;
+    private BlogType blogtype;
 
-    //创建人
-    @Field("create_time")
-    private Date createTime;
-    private String create;
+    // 创建人
+    private String creator;
 
-    //修改人
-    @Field("modifier_time")
-    private Date modifierTime;
-    private String modifier;
-
-    //是否删除 0 否 1 是
-    private int dr;
-
-    public String getId() {
-        return id;
+    public String getCreator() {
+        return creator;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getCreate() {
-        return create;
-    }
-
-    public void setCreate(String create) {
-        this.create = create;
-    }
-
-    public Date getModifierTime() {
-        return modifierTime;
-    }
-
-    public void setModifierTime(Date modifierTime) {
-        this.modifierTime = modifierTime;
-    }
-
-    public String getModifier() {
-        return modifier;
-    }
-
-    public void setModifier(String modifier) {
-        this.modifier = modifier;
-    }
-
-    public int getDr() {
-        return dr;
-    }
-
-    public void setDr(int dr) {
-        this.dr = dr;
+    public void setCreator(String creator) {
+        this.creator = creator;
     }
 
     public String getSketch() {
@@ -114,5 +54,13 @@ public class BlogsLinkEntity implements Serializable {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public BlogType getBlogtype() {
+        return blogtype;
+    }
+
+    public void setBlogtype(BlogType blogtype) {
+        this.blogtype = blogtype;
     }
 }

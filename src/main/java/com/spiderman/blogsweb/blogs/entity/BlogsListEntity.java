@@ -1,74 +1,49 @@
 package com.spiderman.blogsweb.blogs.entity;
 
-import org.bson.types.ObjectId;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import com.spiderman.blogsweb.base.entity.BaseEntity;
+import com.spiderman.blogsweb.blogs.converter.BlogType;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
-import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * 博客列表\顺序
  */
-@Document(collection = "blogs_list")
-public class BlogsListEntity implements Serializable {
+@Entity
+@Table(name = "blogs_list")
+@SQLDelete(sql = "update blogs_list set dr = 1 where id = ?")
+@Where(clause = "dr = 0")
+public class BlogsListEntity extends BaseEntity {
 
-    public BlogsListEntity(String type) {
-        this.type = type;
-        this.dr = 0;
-    }
+    private String blogid;
 
-    @Id
-    private String id;
+    private BlogType blogtype;
 
-    private ObjectId blogid;
+    private long listorder;
 
-    private String type;
-
-    private long order;
-
-    private int dr;
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public ObjectId getBlogid_obj() {
+    public String getBlogid() {
         return blogid;
     }
 
-    public String getBlogid() {
-        return blogid.toString();
-    }
-
     public void setBlogid(String blogid) {
-        this.blogid = new ObjectId(blogid);
+        this.blogid = blogid;
     }
 
-    public long getOrder() {
-        return order;
+    public BlogType getBlogtype() {
+        return blogtype;
     }
 
-    public void setOrder(long order) {
-        this.order = order;
+    public void setBlogtype(BlogType blogtype) {
+        this.blogtype = blogtype;
     }
 
-    public int getDr() {
-        return dr;
+    public long getListorder() {
+        return listorder;
     }
 
-    public void setDr(int dr) {
-        this.dr = dr;
+    public void setListorder(long listorder) {
+        this.listorder = listorder;
     }
 }

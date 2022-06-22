@@ -3,7 +3,7 @@ package com.spiderman.blogsweb.classification.service.Impl;
 import com.spiderman.blogsweb.classification.entity.ClassificationEntity;
 import com.spiderman.blogsweb.classification.model.ClassificationModel;
 import com.spiderman.blogsweb.classification.repository.ClassificationRepository;
-import com.spiderman.blogsweb.classification.service.ClassificationQyeruService;
+import com.spiderman.blogsweb.classification.service.ClassificationQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ClassificationQyeruServiceImpl implements ClassificationQyeruService {
+public class ClassificationQueryServiceImpl implements ClassificationQueryService {
 
     private ClassificationRepository dao;
 
@@ -28,11 +28,6 @@ public class ClassificationQyeruServiceImpl implements ClassificationQyeruServic
     @Override
     public Page<ClassificationEntity> queryAll(ClassificationModel querySearch) {
         return dao.findAll(getSpecification(querySearch), PageRequest.of(querySearch.getCurrent()-1, querySearch.getPageSize()));
-    }
-
-    @Override
-    public long count(ClassificationModel querySearch) {
-        return dao.count(getSpecification(querySearch));
     }
 
     private Specification<ClassificationEntity> getSpecification(ClassificationModel querySearch){

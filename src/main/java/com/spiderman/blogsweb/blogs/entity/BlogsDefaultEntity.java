@@ -1,32 +1,29 @@
 package com.spiderman.blogsweb.blogs.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.spiderman.blogsweb.defdoc.entity.DefdocEntity;
-import org.bson.types.ObjectId;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+import com.spiderman.blogsweb.base.entity.BaseEntity;
+import com.spiderman.blogsweb.blogs.converter.BlogType;
+import com.spiderman.blogsweb.classification.entity.ClassificationEntity;
+import com.spiderman.blogsweb.tag.entity.TagLibraryEntity;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
-import java.io.Serializable;
-import java.util.Date;
+import javax.persistence.*;
 import java.util.List;
 
 /**
  * 一般文章实体
  * 包含单图片、多图片、音频、视频
  */
-@Document(collection = "blogs_default")
-public class BlogsDefaultEntity implements Serializable {
-
-    public BlogsDefaultEntity(String type) {
-        this.dr = 0;
-        this.type = type;
-        this.createTime = new Date();
-    }
+@Entity
+@Table(name = "blogs_default")
+@SQLDelete(sql = "update blogs_default set dr = 1 where id = ?")
+@Where(clause = "dr = 0")
+public class BlogsDefaultEntity extends BaseEntity {
 
     //首页图片
-    private List<String> images;
+    @OneToMany
+    @JoinColumn(name = "images_id")
+    private List<BlogsDefaultImagesEntity> images;
 
     //多媒体
     private String multimedia;
@@ -35,55 +32,64 @@ public class BlogsDefaultEntity implements Serializable {
     private String title;
 
     //描述
-    private String describe;
+    @Column(length = 1000)
+    private String description;
 
     //分类
-    @DBRef
-    private DefdocEntity classify;
+    @ManyToOne
+    @JoinColumn(name = "classify_id")
+    private ClassificationEntity classify;
 
     //标签
-    private List<String> tag;
+    @ManyToMany
+    @JoinColumn(name = "tags_id")
+    private List<TagLibraryEntity> tags;
 
     //内容
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String content;
 
-    @Id
-    private String id;
 
     //类型 image\images\audio\video
-    private String type;
-
-    //创建人
-    @Field("create_time")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
-    private Date createTime;
-    private String create;
-
-    //修改人
-    @Field("modifier_time")
-    private Date modifierTime;
-    private String modifier;
-
-    //是否删除 0 否 1 是
-    private int dr;
+    private BlogType blogtype;
 
     //下一篇
-    private ObjectId next;
+    private String nextblogid;
 
-    public ObjectId getNext() {
-        return next;
+    // 创建人
+    private String creator;
+
+    public String getCreator() {
+        return creator;
     }
 
-    public void setNext(ObjectId next) {
-        this.next = next;
+    public void setCreator(String creator) {
+        this.creator = creator;
     }
 
-    public List<String> getImages() {
+    public List<BlogsDefaultImagesEntity> getImages() {
         return images;
     }
 
-    public void setImages(List<String> images) {
+    public void setImages(List<BlogsDefaultImagesEntity> images) {
         this.images = images;
+    }
+
+    public List<TagLibraryEntity> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<TagLibraryEntity> tags) {
+        this.tags = tags;
+    }
+
+    public ClassificationEntity getClassify() {
+        return classify;
+    }
+
+    public void setClassify(ClassificationEntity classify) {
+        this.classify = classify;
     }
 
     public String getMultimedia() {
@@ -102,28 +108,12 @@ public class BlogsDefaultEntity implements Serializable {
         this.title = title;
     }
 
-    public String getDescribe() {
-        return describe;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescribe(String describe) {
-        this.describe = describe;
-    }
-
-    public DefdocEntity getClassify() {
-        return classify;
-    }
-
-    public void setClassify(DefdocEntity classify) {
-        this.classify = classify;
-    }
-
-    public List<String> getTag() {
-        return tag;
-    }
-
-    public void setTag(List<String> tag) {
-        this.tag = tag;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getContent() {
@@ -134,59 +124,19 @@ public class BlogsDefaultEntity implements Serializable {
         this.content = content;
     }
 
-    public String getId() {
-        return id;
+    public BlogType getBlogtype() {
+        return blogtype;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setBlogtype(BlogType blogtype) {
+        this.blogtype = blogtype;
     }
 
-    public String getType() {
-        return type;
+    public String getNextblogid() {
+        return nextblogid;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getCreate() {
-        return create;
-    }
-
-    public void setCreate(String create) {
-        this.create = create;
-    }
-
-    public Date getModifierTime() {
-        return modifierTime;
-    }
-
-    public void setModifierTime(Date modifierTime) {
-        this.modifierTime = modifierTime;
-    }
-
-    public String getModifier() {
-        return modifier;
-    }
-
-    public void setModifier(String modifier) {
-        this.modifier = modifier;
-    }
-
-    public int getDr() {
-        return dr;
-    }
-
-    public void setDr(int dr) {
-        this.dr = dr;
+    public void setNextblogid(String nextblogid) {
+        this.nextblogid = nextblogid;
     }
 }

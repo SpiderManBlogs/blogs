@@ -1,8 +1,9 @@
 package com.spiderman.blogsweb.blogs.vo;
 
-public class BlogsSayingVO {
+import com.spiderman.blogsweb.base.model.BaseModel;
+import com.spiderman.blogsweb.blogs.converter.BlogType;
 
-    private String id;
+public class BlogsSayingVO extends BaseModel {
 
     //名言
     private String saying;
@@ -10,16 +11,21 @@ public class BlogsSayingVO {
     //出处
     private String provenance;
 
+    private BlogType blogtype;
+
+    // 创建人
+    private String creator;
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
+    }
+
     public String getSaying() {
         return saying;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public void setSaying(String saying) {
@@ -32,5 +38,13 @@ public class BlogsSayingVO {
 
     public void setProvenance(String provenance) {
         this.provenance = provenance;
+    }
+
+    public BlogType getBlogtype() {
+        return blogtype;
+    }
+
+    public void setBlogtype(BlogType blogtype) {
+        this.blogtype = blogtype;
     }
 }

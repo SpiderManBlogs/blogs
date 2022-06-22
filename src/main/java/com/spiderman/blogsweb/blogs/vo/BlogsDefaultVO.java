@@ -1,54 +1,46 @@
 package com.spiderman.blogsweb.blogs.vo;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.spiderman.blogsweb.defdoc.vo.DefdocVO;
+import com.spiderman.blogsweb.base.model.BaseModel;
+import com.spiderman.blogsweb.blogs.converter.BlogType;
+import com.spiderman.blogsweb.classification.model.ClassificationModel;
+import com.spiderman.blogsweb.tag.model.TagLibraryModel;
 
-import java.util.Date;
 import java.util.List;
 
-public class BlogsDefaultVO {
+public class BlogsDefaultVO extends BaseModel {
 
-    private List<String> images;
+    private List<BlogsDefaultImagesVO> images;
     private String multimedia;
     private String title;
-    private String describe;
-    private DefdocVO classify;
-    private List<String> tag;
+    private String description;
+    private ClassificationModel classify;
+    private List<TagLibraryModel> tags;
     private String content;
     private String id;
     //类型 image\images\audio\video
-    private String type;
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
-    private Date createTime;
-    private String create;
-
+    private BlogType blogtype;
 
     //下一篇
-    private String next;
+    private String nextblogid;
     //上一篇
-    private String prev;
+    private String prevblogid;
 
-    public String getNext() {
-        return next;
+    // 创建人
+    private String creator;
+
+    public String getCreator() {
+        return creator;
     }
 
-    public void setNext(String next) {
-        this.next = next;
+    public void setCreator(String creator) {
+        this.creator = creator;
     }
 
-    public String getPrev() {
-        return prev;
-    }
-
-    public void setPrev(String prev) {
-        this.prev = prev;
-    }
-
-    public List<String> getImages() {
+    public List<BlogsDefaultImagesVO> getImages() {
         return images;
     }
 
-    public void setImages(List<String> images) {
+    public void setImages(List<BlogsDefaultImagesVO> images) {
         this.images = images;
     }
 
@@ -68,28 +60,28 @@ public class BlogsDefaultVO {
         this.title = title;
     }
 
-    public String getDescribe() {
-        return describe;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescribe(String describe) {
-        this.describe = describe;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public DefdocVO getClassify() {
+    public ClassificationModel getClassify() {
         return classify;
     }
 
-    public void setClassify(DefdocVO classify) {
+    public void setClassify(ClassificationModel classify) {
         this.classify = classify;
     }
 
-    public List<String> getTag() {
-        return tag;
+    public List<TagLibraryModel> getTags() {
+        return tags;
     }
 
-    public void setTag(List<String> tag) {
-        this.tag = tag;
+    public void setTags(List<TagLibraryModel> tags) {
+        this.tags = tags;
     }
 
     public String getContent() {
@@ -100,35 +92,37 @@ public class BlogsDefaultVO {
         this.content = content;
     }
 
+    @Override
     public String getId() {
         return id;
     }
 
+    @Override
     public void setId(String id) {
         this.id = id;
     }
 
-    public String getType() {
-        return type;
+    public BlogType getBlogtype() {
+        return blogtype;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setBlogtype(BlogType blogtype) {
+        this.blogtype = blogtype;
     }
 
-    public Date getCreateTime() {
-        return createTime;
+    public String getNextblogid() {
+        return nextblogid;
     }
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+    public void setNextblogid(String nextblogid) {
+        this.nextblogid = nextblogid;
     }
 
-    public String getCreate() {
-        return create;
+    public String getPrevblogid() {
+        return prevblogid;
     }
 
-    public void setCreate(String create) {
-        this.create = create;
+    public void setPrevblogid(String prevblogid) {
+        this.prevblogid = prevblogid;
     }
 }
