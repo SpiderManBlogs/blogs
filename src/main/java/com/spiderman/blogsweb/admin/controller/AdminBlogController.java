@@ -1,0 +1,103 @@
+package com.spiderman.blogsweb.admin.controller;
+
+import com.spiderman.blogsweb.admin.model.Result;
+import com.spiderman.blogsweb.admin.model.TableListResult;
+import com.spiderman.blogsweb.blogs.entity.BlogsListEntity;
+import com.spiderman.blogsweb.blogs.service.BlogsQueryService;
+import com.spiderman.blogsweb.blogs.service.BlogsSaveService;
+import com.spiderman.blogsweb.blogs.vo.BlogsLinkVO;
+import com.spiderman.blogsweb.blogs.vo.BlogsListVO;
+import com.spiderman.blogsweb.blogs.vo.BlogsSayingVO;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/blogs")
+public class AdminBlogController {
+
+    private static final Logger log = LogManager.getLogger(AdminBlogController.class.getName());
+
+    private BlogsQueryService query;
+    private BlogsSaveService save;
+
+    @Autowired
+    public void setQuery(BlogsQueryService query) {
+        this.query = query;
+    }
+
+    @Autowired
+    public void setSave(BlogsSaveService save) {
+        this.save = save;
+    }
+
+
+
+    @GetMapping("/list/queryPages")
+    @ResponseBody
+    public TableListResult queryPages(BlogsListVO querySearch){
+        TableListResult result = TableListResult.instance();
+        try {
+            Page<BlogsListEntity> blogslistEntities = query.queryAll(querySearch);
+            result.success();
+            result.setData(querySearch.getCurrent(),querySearch.getPageSize(),blogslistEntities.getTotalElements(),blogslistEntities.getContent());
+        }catch (Exception e){
+            result.fail();
+            result.setErrorMessage("查询失败！" + e.getMessage());
+            log.error("博客列表查询失败！" + e.getMessage());
+        }
+        return result;
+    }
+
+    @RequestMapping("/saying/save")
+    @ResponseBody
+    public Result queryPages(@RequestBody BlogsSayingVO blogsSayingVO){
+        Result result = Result.instance();
+        try {
+            if (!StringUtils.hasText(blogsSayingVO.getSaying()) || !StringUtils.hasText(blogsSayingVO.getProvenance())){
+                throw new Exception("名言或出处不能为空!");
+            }
+            BlogsSayingVO back;
+            if (StringUtils.hasText(blogsSayingVO.getId())){
+                back = save.updateSaying(blogsSayingVO);
+            }else {
+                back = save.addSaying(blogsSayingVO);
+            }
+            result.success();
+            result.put("data",back);
+        }catch (Exception e){
+            result.fail();
+            result.setErrorMessage("保存失败！" + e.getMessage());
+            log.error("名言保存失败！" + e.getMessage());
+        }
+        return result;
+    }
+
+    @RequestMapping("/link/save")
+    @ResponseBody
+    public Result queryPages(@RequestBody BlogsLinkVO blogsLinkVO){
+        Result result = Result.instance();
+        try {
+            if (!StringUtils.hasText(blogsLinkVO.getSketch()) || !StringUtils.hasText(blogsLinkVO.getUrl())){
+                throw new Exception("描述或链接地址不能为空!");
+            }
+            BlogsLinkVO back;
+            if (StringUtils.hasText(blogsLinkVO.getId())){
+                back = save.updateLink(blogsLinkVO);
+            }else {
+                back = save.addLink(blogsLinkVO);
+            }
+            result.success();
+            result.put("data",back);
+        }catch (Exception e){
+            result.fail();
+            result.setErrorMessage("保存失败！" + e.getMessage());
+            log.error("链接保存失败！" + e.getMessage());
+        }
+        return result;
+    }
+
+}

@@ -40,7 +40,7 @@ public class BlogsQueryServiceImpl implements BlogsQueryService {
             if (StringUtils.hasText(querySearch.getCode())) {
                 list.add(criteriaBuilder.like(root.get("code"), "%" + querySearch.getCode() + "%"));
             }
-            if (StringUtils.hasText(querySearch.getBlogtype().value())) {
+            if (querySearch.getBlogtype() != null) {
                 list.add(criteriaBuilder.equal(root.get("blogtype"),querySearch.getBlogtype().value()));
             }
             return query.where(list.toArray(new Predicate[0])).getRestriction();
