@@ -1,6 +1,8 @@
 package com.spiderman.blogsweb.base.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -21,7 +23,11 @@ public class BaseEntity implements Serializable {
     @Column(nullable = false)
     private String code;
     @Column(updatable = false)
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Date createTime;
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Date updateTime;
 
 

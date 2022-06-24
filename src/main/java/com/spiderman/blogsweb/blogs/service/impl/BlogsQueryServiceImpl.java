@@ -1,7 +1,11 @@
 package com.spiderman.blogsweb.blogs.service.impl;
 
+import com.spiderman.blogsweb.blogs.converter.BlogType;
 import com.spiderman.blogsweb.blogs.entity.BlogsListEntity;
+import com.spiderman.blogsweb.blogs.repository.BlogsDefaultRepos;
+import com.spiderman.blogsweb.blogs.repository.BlogsLinkRepository;
 import com.spiderman.blogsweb.blogs.repository.BlogsListRepository;
+import com.spiderman.blogsweb.blogs.repository.BlogsSayingRepository;
 import com.spiderman.blogsweb.blogs.service.BlogsQueryService;
 import com.spiderman.blogsweb.blogs.vo.BlogsListVO;
 import org.apache.logging.log4j.LogManager;
@@ -24,6 +28,25 @@ public class BlogsQueryServiceImpl implements BlogsQueryService {
 
     private BlogsListRepository listDao;
 
+    private BlogsSayingRepository sayingDao;
+    private BlogsLinkRepository linkDao;
+    private BlogsDefaultRepos defaultDao;
+
+    @Autowired
+    public void setSayingDao(BlogsSayingRepository sayingDao) {
+        this.sayingDao = sayingDao;
+    }
+
+    @Autowired
+    public void setLinkDao(BlogsLinkRepository linkDao) {
+        this.linkDao = linkDao;
+    }
+
+    @Autowired
+    public void setDefaultDao(BlogsDefaultRepos defaultDao) {
+        this.defaultDao = defaultDao;
+    }
+
     @Autowired
     public void setListDao(BlogsListRepository listDao) {
         this.listDao = listDao;
@@ -41,9 +64,31 @@ public class BlogsQueryServiceImpl implements BlogsQueryService {
                 list.add(criteriaBuilder.like(root.get("code"), "%" + querySearch.getCode() + "%"));
             }
             if (querySearch.getBlogtype() != null) {
-                list.add(criteriaBuilder.equal(root.get("blogtype"),querySearch.getBlogtype().value()));
+                list.add(criteriaBuilder.equal(root.get("blogtype"),querySearch.getBlogtype()));
             }
             return query.where(list.toArray(new Predicate[0])).getRestriction();
         };
+    }
+
+    @Override
+    public Object query(String id, BlogType type) throws Exception {
+        Object back;
+        switch (type){
+            case SAYING:
+                back = sayingDao.findById(id);
+                break;
+            case LINK:
+                back = linkDao.findById(id);
+                break;
+            case IMAGE:
+            case IMAGES:
+            case VIDEO:
+            case AUDIO:
+                back = defaultDao.findById(id);
+                break;
+            default:
+                throw new Exception("查询类型不正确!");
+        }
+        return back;
     }
 }

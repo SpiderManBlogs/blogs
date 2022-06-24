@@ -2,6 +2,7 @@ package com.spiderman.blogsweb.admin.controller;
 
 import com.spiderman.blogsweb.admin.model.Result;
 import com.spiderman.blogsweb.admin.model.TableListResult;
+import com.spiderman.blogsweb.blogs.converter.BlogType;
 import com.spiderman.blogsweb.blogs.entity.BlogsListEntity;
 import com.spiderman.blogsweb.blogs.service.BlogsQueryService;
 import com.spiderman.blogsweb.blogs.service.BlogsSaveService;
@@ -36,9 +37,9 @@ public class AdminBlogController {
 
 
 
-    @GetMapping("/list/queryPages")
+    @RequestMapping("/list/queryPages")
     @ResponseBody
-    public TableListResult queryPages(BlogsListVO querySearch){
+    public TableListResult queryPages(@RequestBody BlogsListVO querySearch){
         TableListResult result = TableListResult.instance();
         try {
             Page<BlogsListEntity> blogslistEntities = query.queryAll(querySearch);
@@ -72,6 +73,28 @@ public class AdminBlogController {
             result.fail();
             result.setErrorMessage("保存失败！" + e.getMessage());
             log.error("名言保存失败！" + e.getMessage());
+        }
+        return result;
+    }
+
+    @GetMapping("/{type}/{id}")
+    @ResponseBody
+    public Result sayingQuery(@PathVariable("id") String id, @PathVariable("type") String type){
+        Result result = Result.instance();
+        try {
+            if (!StringUtils.hasText(type) || !StringUtils.hasText(id)){
+                throw new Exception("查询参数不能为空!");
+            }
+            BlogType blogType = BlogType.valueOf(type);
+            if (!StringUtils.hasText(blogType.value())){
+                throw new Exception("查询类型不正确!");
+            }
+            result.success();
+            result.put("data",query.query(id, blogType));
+        }catch (Exception e){
+            result.fail();
+            result.setErrorMessage("查询详情失败！" + e.getMessage());
+            log.error("查询详情失败！" + e.getMessage());
         }
         return result;
     }
