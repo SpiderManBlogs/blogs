@@ -1,6 +1,5 @@
 package com.spiderman.blogsweb.file.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.spiderman.blogsweb.file.service.FileSaveService;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
@@ -10,8 +9,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -30,25 +31,6 @@ public class FileController {
 
     @Value("${video.section}")
     private String SECTION;
-
-
-    @RequestMapping("/insert")
-    @ResponseBody
-    public JSONObject insert(@RequestBody MultipartFile file) {
-        JSONObject back = new JSONObject();
-        try {
-            log.debug("文件上传日志：" + file.toString());
-            String fileId = fileSaveService.insert(file);
-            log.debug("文件上传结束日志：" + fileId );
-            back.put("data",fileId);
-            back.put("status",1);
-        }catch (Exception e){
-            back.put("status",0);
-            back.put("msg","文件上传错误：" + e.getMessage());
-            log.error("文件上传错误：" + e.getMessage());
-        }
-        return back;
-    }
 
     @RequestMapping("/queryImage/{id}")
     @ResponseBody

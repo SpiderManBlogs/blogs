@@ -4,6 +4,8 @@ import com.spiderman.blogsweb.classification.entity.ClassificationEntity;
 import com.spiderman.blogsweb.classification.model.ClassificationModel;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 public interface ClassificationQueryService {
 
     /**
@@ -13,4 +15,5 @@ public interface ClassificationQueryService {
      */
     Page<ClassificationEntity> queryAll(ClassificationModel querySearch);
 
+    List<ClassificationModel> queryAll();
 }

@@ -1,6 +1,7 @@
 package com.spiderman.blogsweb.admin.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.spiderman.blogsweb.admin.model.Result;
 import com.spiderman.blogsweb.admin.model.TableListResult;
 import com.spiderman.blogsweb.classification.entity.ClassificationEntity;
@@ -13,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/classification")
@@ -41,6 +45,29 @@ public class AdminClassificationController {
             Page<ClassificationEntity> classificationEntities = query.queryAll(querySearch);
             result.success();
             result.setData(querySearch.getCurrent(),querySearch.getPageSize(),classificationEntities.getTotalElements(),classificationEntities.getContent());
+        }catch (Exception e){
+            result.fail();
+            result.setErrorMessage("查询失败！" + e.getMessage());
+            log.error("分类查询失败！" + e.getMessage());
+        }
+        return result;
+    }
+
+    @GetMapping("/query")
+    @ResponseBody
+    public Result query(){
+        Result result = Result.instance();
+        try {
+            List<ClassificationModel> classificationModels = query.queryAll();
+            List<JSONObject> collect = classificationModels.stream().map(item -> {
+                JSONObject object = new JSONObject();
+                object.put("name", item.getName());
+                object.put("code", item.getCode());
+                object.put("id", item.getId());
+                return object;
+            }).collect(Collectors.toList());
+            result.success();
+            result.put("data",collect);
         }catch (Exception e){
             result.fail();
             result.setErrorMessage("查询失败！" + e.getMessage());

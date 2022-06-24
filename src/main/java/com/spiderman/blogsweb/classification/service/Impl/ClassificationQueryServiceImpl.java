@@ -4,6 +4,7 @@ import com.spiderman.blogsweb.classification.entity.ClassificationEntity;
 import com.spiderman.blogsweb.classification.model.ClassificationModel;
 import com.spiderman.blogsweb.classification.repository.ClassificationRepository;
 import com.spiderman.blogsweb.classification.service.ClassificationQueryService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +15,7 @@ import org.springframework.util.StringUtils;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ClassificationQueryServiceImpl implements ClassificationQueryService {
@@ -45,5 +47,18 @@ public class ClassificationQueryServiceImpl implements ClassificationQueryServic
             }
             return query.where(list.toArray(new Predicate[0])).getRestriction();
         };
+    }
+
+    @Override
+    public List<ClassificationModel> queryAll() {
+        List<ClassificationEntity> all = dao.findAll();
+        all = all.stream().filter(ClassificationEntity::isEnable).collect(Collectors.toList());
+        List<ClassificationModel> back = new ArrayList<>();
+        for (ClassificationEntity entity:all) {
+            ClassificationModel model = new ClassificationModel();
+            BeanUtils.copyProperties(entity,model);
+            back.add(model);
+        }
+        return back;
     }
 }
