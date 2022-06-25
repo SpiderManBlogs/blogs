@@ -21,8 +21,8 @@ import java.util.List;
 public class BlogsDefaultEntity extends BaseEntity {
 
     //首页图片
-    @OneToMany
-    @JoinColumn(name = "images_id")
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "blogid_id")
     private List<BlogsDefaultImagesEntity> images;
 
     //多媒体
@@ -41,7 +41,7 @@ public class BlogsDefaultEntity extends BaseEntity {
     private ClassificationEntity classify;
 
     //标签
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "tags_id")
     private List<TagLibraryEntity> tags;
 

@@ -6,6 +6,7 @@ import com.spiderman.blogsweb.blogs.converter.BlogType;
 import com.spiderman.blogsweb.blogs.entity.BlogsListEntity;
 import com.spiderman.blogsweb.blogs.service.BlogsQueryService;
 import com.spiderman.blogsweb.blogs.service.BlogsSaveService;
+import com.spiderman.blogsweb.blogs.vo.BlogsDefaultVO;
 import com.spiderman.blogsweb.blogs.vo.BlogsLinkVO;
 import com.spiderman.blogsweb.blogs.vo.BlogsListVO;
 import com.spiderman.blogsweb.blogs.vo.BlogsSayingVO;
@@ -55,7 +56,7 @@ public class AdminBlogController {
 
     @RequestMapping("/saying/save")
     @ResponseBody
-    public Result queryPages(@RequestBody BlogsSayingVO blogsSayingVO){
+    public Result sayingSave(@RequestBody BlogsSayingVO blogsSayingVO){
         Result result = Result.instance();
         try {
             if (!StringUtils.hasText(blogsSayingVO.getSaying()) || !StringUtils.hasText(blogsSayingVO.getProvenance())){
@@ -79,7 +80,7 @@ public class AdminBlogController {
 
     @GetMapping("/{type}/{id}")
     @ResponseBody
-    public Result sayingQuery(@PathVariable("id") String id, @PathVariable("type") String type){
+    public Result blogQuery(@PathVariable("id") String id, @PathVariable("type") String type){
         Result result = Result.instance();
         try {
             if (!StringUtils.hasText(type) || !StringUtils.hasText(id)){
@@ -101,7 +102,7 @@ public class AdminBlogController {
 
     @RequestMapping("/link/save")
     @ResponseBody
-    public Result queryPages(@RequestBody BlogsLinkVO blogsLinkVO){
+    public Result linkSave(@RequestBody BlogsLinkVO blogsLinkVO){
         Result result = Result.instance();
         try {
             if (!StringUtils.hasText(blogsLinkVO.getSketch()) || !StringUtils.hasText(blogsLinkVO.getUrl())){
@@ -119,6 +120,31 @@ public class AdminBlogController {
             result.fail();
             result.setErrorMessage("保存失败！" + e.getMessage());
             log.error("链接保存失败！" + e.getMessage());
+        }
+        return result;
+    }
+
+    @RequestMapping("/default/save")
+    @ResponseBody
+    public Result defaultSave(@RequestBody BlogsDefaultVO blogsDefaultVO){
+        Result result = Result.instance();
+        try {
+//            if (!StringUtils.hasText(blogsDefaultVO.getTitle())
+//                    || !StringUtils.hasText(blogsDefaultVO.get())){
+//                throw new Exception("描述或链接地址不能为空!");
+//            }
+            BlogsDefaultVO back;
+            if (StringUtils.hasText(blogsDefaultVO.getId())){
+                back = save.updateDefault(blogsDefaultVO);
+            }else {
+                back = save.addDefault(blogsDefaultVO);
+            }
+            result.success();
+            result.put("data",back);
+        }catch (Exception e){
+            result.fail();
+            result.setErrorMessage("保存失败！" + e.getMessage());
+            log.error("博客保存失败！" + e.getMessage());
         }
         return result;
     }

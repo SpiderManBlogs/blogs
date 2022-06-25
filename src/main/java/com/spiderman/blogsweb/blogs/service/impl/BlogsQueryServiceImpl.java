@@ -2,7 +2,7 @@ package com.spiderman.blogsweb.blogs.service.impl;
 
 import com.spiderman.blogsweb.blogs.converter.BlogType;
 import com.spiderman.blogsweb.blogs.entity.BlogsListEntity;
-import com.spiderman.blogsweb.blogs.repository.BlogsDefaultRepos;
+import com.spiderman.blogsweb.blogs.repository.BlogsDefaultRepository;
 import com.spiderman.blogsweb.blogs.repository.BlogsLinkRepository;
 import com.spiderman.blogsweb.blogs.repository.BlogsListRepository;
 import com.spiderman.blogsweb.blogs.repository.BlogsSayingRepository;
@@ -30,7 +30,7 @@ public class BlogsQueryServiceImpl implements BlogsQueryService {
 
     private BlogsSayingRepository sayingDao;
     private BlogsLinkRepository linkDao;
-    private BlogsDefaultRepos defaultDao;
+    private BlogsDefaultRepository defaultDao;
 
     @Autowired
     public void setSayingDao(BlogsSayingRepository sayingDao) {
@@ -43,7 +43,7 @@ public class BlogsQueryServiceImpl implements BlogsQueryService {
     }
 
     @Autowired
-    public void setDefaultDao(BlogsDefaultRepos defaultDao) {
+    public void setDefaultDao(BlogsDefaultRepository defaultDao) {
         this.defaultDao = defaultDao;
     }
 

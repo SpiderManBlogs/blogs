@@ -1,17 +1,21 @@
 package com.spiderman.blogsweb.blogs.service.impl;
 
 import com.spiderman.blogsweb.blogs.converter.BlogType;
-import com.spiderman.blogsweb.blogs.entity.BlogsLinkEntity;
-import com.spiderman.blogsweb.blogs.entity.BlogsListEntity;
-import com.spiderman.blogsweb.blogs.entity.BlogsSayingEntity;
+import com.spiderman.blogsweb.blogs.entity.*;
+import com.spiderman.blogsweb.blogs.repository.BlogsDefaultRepository;
 import com.spiderman.blogsweb.blogs.repository.BlogsLinkRepository;
 import com.spiderman.blogsweb.blogs.repository.BlogsListRepository;
 import com.spiderman.blogsweb.blogs.repository.BlogsSayingRepository;
 import com.spiderman.blogsweb.blogs.service.BlogsSaveService;
+import com.spiderman.blogsweb.blogs.vo.BlogsDefaultVO;
 import com.spiderman.blogsweb.blogs.vo.BlogsLinkVO;
 import com.spiderman.blogsweb.blogs.vo.BlogsSayingVO;
+import com.spiderman.blogsweb.classification.entity.ClassificationEntity;
+import com.spiderman.blogsweb.classification.model.ClassificationModel;
 import com.spiderman.blogsweb.serial.entity.SerialNumberEntity;
 import com.spiderman.blogsweb.serial.repository.SerialRepository;
+import com.spiderman.blogsweb.tag.entity.TagLibraryEntity;
+import com.spiderman.blogsweb.tag.repository.TagLibraryRepository;
 import com.spiderman.blogsweb.utils.CheckoutException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,9 +26,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DecimalFormat;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -38,28 +41,9 @@ public class BLogsSaveServiceImpl implements BlogsSaveService {
     private SerialRepository serialDao;
     private BlogsSayingRepository sayingDao;
     private BlogsLinkRepository linkDao;
-
     private BlogsListRepository listDao;
-
-    @Autowired
-    public void setLinkDao(BlogsLinkRepository linkDao) {
-        this.linkDao = linkDao;
-    }
-
-    @Autowired
-    public void setListDao(BlogsListRepository listDao) {
-        this.listDao = listDao;
-    }
-
-    @Autowired
-    public void setSayingDao(BlogsSayingRepository sayingDao) {
-        this.sayingDao = sayingDao;
-    }
-
-    @Autowired
-    public void setSerialDao(SerialRepository serialDao) {
-        this.serialDao = serialDao;
-    }
+    private BlogsDefaultRepository defaultDao;
+    private TagLibraryRepository tagDao;
 
     @Override
     public BlogsSayingVO addSaying(BlogsSayingVO blogsSayingVO) {
@@ -119,6 +103,69 @@ public class BLogsSaveServiceImpl implements BlogsSaveService {
         return back;
     }
 
+    @Override
+    public BlogsDefaultVO addDefault(BlogsDefaultVO blogsDefaultVO) {
+        BlogsDefaultEntity entity = new BlogsDefaultEntity();
+        BlogsDefaultCopy(blogsDefaultVO,entity);
+        //处理标签
+        List<TagLibraryEntity> tags = entity.getTags();
+        List<String> tagNames = tags.stream().map(TagLibraryEntity::getName).collect(Collectors.toList());
+        List<TagLibraryEntity> tagentitys = tagDao.queryByNames(tagNames);
+        Map<String, TagLibraryEntity> tagNameMap = tagentitys.stream().collect(Collectors.toMap(TagLibraryEntity::getName, item -> item));
+        tags = tags.stream().map(tag -> tagNameMap.getOrDefault(tag.getName(), tag)).collect(Collectors.toList());
+        entity.setTags(tags);
+        //处理标签结束
+        BlogsDefaultEntity save = defaultDao.save(entity);
+        //保存列表
+        this.addList(save.getId(),blogsDefaultVO.getBlogtype());
+        //保存当前博客id 到 上一篇博客的下一篇字段上
+        defaultDao.setNext(save.getId());
+        BlogsDefaultVO back = new BlogsDefaultVO();
+        BeanUtils.copyProperties(save,back);
+        return back;
+    }
+
+    private void BlogsDefaultCopy(BlogsDefaultVO vo,BlogsDefaultEntity entity){
+        BeanUtils.copyProperties(vo,entity);
+        entity.setCreator(create);
+        entity.setCode(this.initCode(vo.getBlogtype()));
+        //封面图片子表
+        List<BlogsDefaultImagesEntity> imagesEntity = vo.getImages().stream().map(image -> {
+            BlogsDefaultImagesEntity imageEntity = new BlogsDefaultImagesEntity();
+            BeanUtils.copyProperties(image,imageEntity);
+            imageEntity.setCode(this.initCode(null));
+            return imageEntity;
+        }).collect(Collectors.toList());
+        entity.setImages(imagesEntity);
+        //分类
+        ClassificationModel classify = vo.getClassify();
+        ClassificationEntity classificationEntity = new ClassificationEntity();
+        BeanUtils.copyProperties(classify,classificationEntity);
+        entity.setClassify(classificationEntity);
+        //标签
+        List<TagLibraryEntity> tagLibraryEntities = vo.getTags().stream().map(tag -> {
+            TagLibraryEntity tagLibraryEntity = new TagLibraryEntity();
+            BeanUtils.copyProperties(tag, tagLibraryEntity);
+            tagLibraryEntity.setCode(this.initCode(null));
+            return tagLibraryEntity;
+        }).collect(Collectors.toList());
+        entity.setTags(tagLibraryEntities);
+    }
+
+    @Override
+    public BlogsDefaultVO updateDefault(BlogsDefaultVO blogsDefaultVO) throws CheckoutException {
+        Optional<BlogsDefaultEntity> byId = defaultDao.findById(blogsDefaultVO.getId());
+        if (!byId.isPresent()){
+            throw new CheckoutException("查询数据不存在。");
+        }
+        BlogsDefaultEntity entity = byId.get();
+        entity.setTitle(blogsDefaultVO.getTitle());
+        BlogsDefaultEntity save = defaultDao.save(entity);
+        BlogsDefaultVO back = new BlogsDefaultVO();
+        BeanUtils.copyProperties(save,back);
+        return back;
+    }
+
     /**
      * 添加列表数据
      * @param blogid 博客id
@@ -157,6 +204,38 @@ public class BLogsSaveServiceImpl implements BlogsSaveService {
             serialNumberEntity.setNum(serialNumberEntity.getNum()+1);
         }
         DecimalFormat df2 = new DecimalFormat("0000");
-        return blogType.name() + date + df2.format(serialNumberEntity.getNum());
+        return (blogType != null ? blogType.name() : "") + date + df2.format(serialNumberEntity.getNum());
+    }
+
+
+
+    @Autowired
+    public void setTagDao(TagLibraryRepository tagDao) {
+        this.tagDao = tagDao;
+    }
+
+    @Autowired
+    public void setDefaultDao(BlogsDefaultRepository defaultDao) {
+        this.defaultDao = defaultDao;
+    }
+
+    @Autowired
+    public void setLinkDao(BlogsLinkRepository linkDao) {
+        this.linkDao = linkDao;
+    }
+
+    @Autowired
+    public void setListDao(BlogsListRepository listDao) {
+        this.listDao = listDao;
+    }
+
+    @Autowired
+    public void setSayingDao(BlogsSayingRepository sayingDao) {
+        this.sayingDao = sayingDao;
+    }
+
+    @Autowired
+    public void setSerialDao(SerialRepository serialDao) {
+        this.serialDao = serialDao;
     }
 }
