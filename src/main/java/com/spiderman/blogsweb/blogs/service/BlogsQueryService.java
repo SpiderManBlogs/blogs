@@ -5,6 +5,9 @@ import com.spiderman.blogsweb.blogs.entity.BlogsListEntity;
 import com.spiderman.blogsweb.blogs.vo.BlogsListVO;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+import java.util.Map;
+
 public interface BlogsQueryService {
 
     /**
@@ -15,4 +18,11 @@ public interface BlogsQueryService {
     Page<BlogsListEntity> queryAll(BlogsListVO querySearch);
 
     Object query(String id, BlogType type) throws Exception;
+
+    /**
+     * 列表数据实体返回页面数据转换
+     * @param content 分页列表数据
+     * @return 返给前台vo集合
+     */
+    List<BlogsListVO> queryAllTitle(List<BlogsListEntity> content);
 }

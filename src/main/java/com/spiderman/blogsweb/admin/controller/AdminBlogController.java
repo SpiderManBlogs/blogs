@@ -17,6 +17,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/blogs")
 public class AdminBlogController {
@@ -44,8 +46,9 @@ public class AdminBlogController {
         TableListResult result = TableListResult.instance();
         try {
             Page<BlogsListEntity> blogslistEntities = query.queryAll(querySearch);
+            List<BlogsListVO> blogsListVOS = query.queryAllTitle(blogslistEntities.getContent());
             result.success();
-            result.setData(querySearch.getCurrent(),querySearch.getPageSize(),blogslistEntities.getTotalElements(),blogslistEntities.getContent());
+            result.setData(querySearch.getCurrent(),querySearch.getPageSize(),blogslistEntities.getTotalElements(),blogsListVOS);
         }catch (Exception e){
             result.fail();
             result.setErrorMessage("查询失败！" + e.getMessage());

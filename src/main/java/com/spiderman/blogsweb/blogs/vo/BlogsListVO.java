@@ -14,6 +14,16 @@ public class BlogsListVO extends BaseModel {
     private int current = 1;
     private int pageSize = 20;
 
+    private String title;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public int getCurrent() {
         return current;
     }

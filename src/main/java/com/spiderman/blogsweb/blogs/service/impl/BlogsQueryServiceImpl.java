@@ -11,7 +11,6 @@ import com.spiderman.blogsweb.blogs.repository.BlogsListRepository;
 import com.spiderman.blogsweb.blogs.repository.BlogsSayingRepository;
 import com.spiderman.blogsweb.blogs.service.BlogsQueryService;
 import com.spiderman.blogsweb.blogs.vo.*;
-import com.spiderman.blogsweb.classification.entity.ClassificationEntity;
 import com.spiderman.blogsweb.classification.model.ClassificationModel;
 import com.spiderman.blogsweb.tag.model.TagLibraryModel;
 import org.apache.logging.log4j.LogManager;
@@ -27,6 +26,7 @@ import org.springframework.util.StringUtils;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -41,29 +41,43 @@ public class BlogsQueryServiceImpl implements BlogsQueryService {
     private BlogsLinkRepository linkDao;
     private BlogsDefaultRepository defaultDao;
 
-    @Autowired
-    public void setSayingDao(BlogsSayingRepository sayingDao) {
-        this.sayingDao = sayingDao;
-    }
-
-    @Autowired
-    public void setLinkDao(BlogsLinkRepository linkDao) {
-        this.linkDao = linkDao;
-    }
-
-    @Autowired
-    public void setDefaultDao(BlogsDefaultRepository defaultDao) {
-        this.defaultDao = defaultDao;
-    }
-
-    @Autowired
-    public void setListDao(BlogsListRepository listDao) {
-        this.listDao = listDao;
-    }
 
     @Override
     public Page<BlogsListEntity> queryAll(BlogsListVO querySearch) {
-        return listDao.findAll(getBlogsListSpecification(querySearch), PageRequest.of(querySearch.getCurrent()-1, querySearch.getPageSize()));
+        return listDao.findAll(getBlogsListSpecification(querySearch), PageRequest.of(querySearch.getCurrent() - 1, querySearch.getPageSize()));
+    }
+
+    @Override
+    public List<BlogsListVO> queryAllTitle(List<BlogsListEntity> content) {
+        //添加详情数据
+        Map<BlogType, List<BlogsListEntity>> collect = content.stream().collect(Collectors.groupingBy(BlogsListEntity::getBlogtype));
+        //名言
+        List<String> sayingIds = collect.get(BlogType.SAYING).stream().map(BlogsListEntity::getBlogid).collect(Collectors.toList());
+        Map<String, String> sayingMap = sayingDao.querySayingByIds(sayingIds).stream()
+                .collect(Collectors.toMap(item->item.get("id"),item->item.get("saying")));
+        //链接
+        List<String> linnkIds = collect.get(BlogType.LINK).stream()
+                .map(BlogsListEntity::getBlogid)
+                .collect(Collectors.toList());
+        Map<String, String> linkMap = linkDao.querySketchByIds(linnkIds).stream()
+                .collect(Collectors.toMap(item->item.get("id"),item->item.get("sketch")));
+        //博客
+        List<BlogsListEntity> defaultEntitys = collect.getOrDefault(BlogType.IMAGE,new ArrayList<>());
+        defaultEntitys.addAll(collect.getOrDefault(BlogType.IMAGES,new ArrayList<>()));
+        defaultEntitys.addAll(collect.getOrDefault(BlogType.VIDEO,new ArrayList<>()));
+        defaultEntitys.addAll(collect.getOrDefault(BlogType.AUDIO,new ArrayList<>()));
+        List<String> defaultIds = defaultEntitys.stream()
+                .map(BlogsListEntity::getBlogid).collect(Collectors.toList());
+        Map<String, String> defaultMap = defaultDao.queryTitleByIds(defaultIds).stream()
+                .collect(Collectors.toMap(item->item.get("id"),item->item.get("title")));
+
+
+        return content.stream().map(item -> {
+            BlogsListVO vo = new BlogsListVO();
+            BeanUtils.copyProperties(item, vo);
+            vo.setTitle(sayingMap.getOrDefault(item.getBlogid(),linkMap.getOrDefault(item.getBlogid(),defaultMap.getOrDefault(item.getBlogid(),""))));
+            return vo;
+        }).collect(Collectors.toList());
     }
 
     private Specification<BlogsListEntity> getBlogsListSpecification(BlogsListVO querySearch){
@@ -132,5 +146,25 @@ public class BlogsQueryServiceImpl implements BlogsQueryService {
                 throw new Exception("查询类型不正确!");
         }
         return back;
+    }
+
+    @Autowired
+    public void setSayingDao(BlogsSayingRepository sayingDao) {
+        this.sayingDao = sayingDao;
+    }
+
+    @Autowired
+    public void setLinkDao(BlogsLinkRepository linkDao) {
+        this.linkDao = linkDao;
+    }
+
+    @Autowired
+    public void setDefaultDao(BlogsDefaultRepository defaultDao) {
+        this.defaultDao = defaultDao;
+    }
+
+    @Autowired
+    public void setListDao(BlogsListRepository listDao) {
+        this.listDao = listDao;
     }
 }
